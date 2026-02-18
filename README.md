@@ -1,6 +1,6 @@
 # Webserv
 
-This project has been created as part of the 42 curriculum by elopez-u and .
+This project has been created as part of the 42 curriculum by elopez-u, iullibar.
 
 ## Description
 
@@ -8,7 +8,10 @@ This project aims to create your own HTTP server. You will be able to test it wi
 
 ## Instructions
 
-
+1. Clone the repository.
+2. Go to webserv/project (where Makefile is located).
+3. Run `make`.
+4. Open the web browser of your choice and enter localhost.
 
 ## Resources
 
