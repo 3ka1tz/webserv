@@ -3,12 +3,15 @@ NAME = webserv
 CXX = c++
 CXXFLAGS = -std=c++98 -Wall -Wextra -Werror
 
+RM = rm -rf
+
 SRC_DIR = src
 OBJ_DIR = obj
 
 SRCS = $(SRC_DIR)/main.cpp \
-       $(SRC_DIR)/ConfParser.cpp
-	   $(SRC_DIR)/Tokenizer.cpp
+       $(SRC_DIR)/ConfParser.cpp \
+       $(SRC_DIR)/HttpRequest.cpp \
+       $(SRC_DIR)/Tokenizer.cpp
 
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
@@ -22,10 +25,10 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJ_DIR)
+	$(RM) $(OBJ_DIR)
 
 fclean: clean
-	rm -f $(NAME)
+	$(RM) $(NAME)
 
 re: fclean all
 
