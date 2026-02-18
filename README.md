@@ -1,6 +1,6 @@
 # Webserv
 
-This project has been created as part of the 42 curriculum by elopez-u, iullibar.
+This project has been created as part of the 42 curriculum by elopez-u.
 
 ## Description
 
@@ -8,14 +8,30 @@ This project aims to create your own HTTP server. You will be able to test it wi
 
 ## Instructions
 
-1. Clone the repository.
-2. Go to webserv/project (where Makefile is located).
-3. Run `make`.
-4. Open the web browser of your choice and enter localhost.
+1. Clone the repository:
+```
+git clone https://github.com/3ka1tz/webserv.git
+```
+2. Enter the project directory (where the Makefile is located):
+```
+cd ~/webserv/project/
+```
+3. Build the server:
+```
+make
+```
+4. Run the server:
+```
+./webserv
+```
+5. Open the web browser of your choice and go to:
+```
+http://localhost:8080
+```
 
 ## Resources
 
-https://en.wikipedia.org/wiki/Common_Gateway_Interface
-https://en.wikipedia.org/wiki/HTTP
-https://en.wikipedia.org/wiki/HTTP#Method
+https://en.wikipedia.org/wiki/Common_Gateway_Interface  
+https://en.wikipedia.org/wiki/HTTP  
+https://en.wikipedia.org/wiki/HTTP#Method  
 https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
