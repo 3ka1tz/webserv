@@ -1,10 +1,5 @@
 NAME = webserv
 
-CXX = c++
-CXXFLAGS = -std=c++98 -Wall -Wextra -Werror
-
-RM = rm -rf
-
 SRC_DIR = src
 OBJ_DIR = obj
 
@@ -15,20 +10,33 @@ SRCS = $(SRC_DIR)/main.cpp \
 
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 
+CXX = c++
+CXXFLAGS = -std=c++98 -Wall -Wextra -Werror
+
+RESET = "\033[0m"
+RED = "\033[31m"
+GREEN = "\033[32m"
+
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^
+	@echo $(GREEN)Webserv compiled!$(RESET)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ_DIR)
+	rm -rf $(OBJ_DIR)
+	@echo $(RED)Webserv objects cleaned.$(RESET)
 
-fclean: clean
-	$(RM) $(NAME)
+fclean:
+	rm -rf $(OBJ_DIR)
+	rm -f $(NAME)
+	@echo $(RED)Webserv objects and executable cleaned.$(RESET)
 
 re: fclean all
 
