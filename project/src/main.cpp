@@ -13,4 +13,6 @@ int main(int argc, char** argv)
     std::string conf = argc == 1 ? "../conf/default.conf" : argv[1];
     if (!isConfValid(conf))
         return 1;
+
+    
 }
