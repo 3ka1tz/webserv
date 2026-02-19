@@ -1,6 +1,6 @@
 # Webserv
 
-This project has been created as part of the 42 curriculum by elopez-u.
+This project has been created as part of the 42 curriculum by elopez-u and iullibar.
 
 ## Description
 
