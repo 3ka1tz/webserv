@@ -9,7 +9,7 @@ void ConnectionHandler::handle(int client_fd)
 {
     std::string response =
         "HTTP/1.1 200 OK\r\n"
-        "Content-Length: 12\r\n"
+        "Content-Length: 13\r\n"
         "Content-Type: text/plain\r\n"
         "\r\n"
         "Hello, World!";

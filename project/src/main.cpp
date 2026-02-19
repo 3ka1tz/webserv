@@ -1,11 +1,12 @@
-#include <iostream>
-#include <string>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <cstdio>
-
 #include "../include/ConnectionHandler.hpp"
 #include "../include/ServerSocket.hpp"
+
+#include <sys/socket.h>
+#include <unistd.h>
+
+#include <cstdio>
+#include <iostream>
+#include <string>
 
 int main(int argc, char** argv)
 {
