@@ -12,13 +12,13 @@ Token Tokenizer::next()
     skipWhitespace();
 
     if (pos >= text.size())
-        return { END, "" };
+        return Token(END, "");
 
     char c = text[pos];
 
-    if (c == '{') { pos++; return { LBRACE, "{" }; }
-    if (c == '}') { pos++; return { RBRACE, "}" }; }
-    if (c == ';') { pos++; return { SEMICOLON, ";" }; }
+    if (c == '{') { pos++; return Token(LBRACE, "{" ); }
+    if (c == '}') { pos++; return Token(RBRACE, "}" ); }
+    if (c == ';') { pos++; return Token(SEMICOLON, ";"); }
 
     return parseWord();
 }
@@ -53,5 +53,5 @@ Token Tokenizer::parseWord()
         pos++;
     }
 
-    return { WORD, text.substr(start, pos - start) };
+    return Token(WORD, text.substr(start, pos - start));
 }
