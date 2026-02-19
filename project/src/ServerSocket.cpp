@@ -1,4 +1,4 @@
-#include <asm-generic/socket.h>
+#include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 
@@ -35,7 +35,7 @@ int createServerSocket(int port)
         exit(1);
     }
 
-    if (listen(server_fd, SOMAXCONN < 0))
+    if (listen(server_fd, SOMAXCONN) < 0)
     {
         perror("listen");
         exit(1);

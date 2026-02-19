@@ -1,5 +1,11 @@
 #include <iostream>
 #include <string>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <cstdio>
+
+#include "../include/ConnectionHandler.hpp"
+#include "../include/ServerSocket.hpp"
 
 int main(int argc, char** argv)
 {
@@ -15,4 +21,21 @@ int main(int argc, char** argv)
 
     //if (!isConfValid(conf))
         //return 1;
+
+    int server_fd = createServerSocket(8080);
+    ConnectionHandler handler;
+
+    while (true)
+    {
+        int client_fd = accept(server_fd, NULL, NULL);
+        if (client_fd < 0)
+        {
+            perror("accept");
+            continue;
+        }
+
+        handler.handle(client_fd);
+    }
+
+    close(server_fd);
 }
