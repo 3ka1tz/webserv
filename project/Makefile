@@ -6,9 +6,11 @@ OBJ_DIR = obj
 SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/ConfParser.cpp \
        $(SRC_DIR)/ConnectionHandler.cpp \
-       $(SRC_DIR)/RequestLine.cpp \
+       $(SRC_DIR)/Delete.cpp \
+       $(SRC_DIR)/Request.cpp \
        $(SRC_DIR)/ServerConfig.cpp \
        $(SRC_DIR)/ServerSocket.cpp \
+       $(SRC_DIR)/Utils.cpp \
        $(SRC_DIR)/Tokenizer.cpp
 
 OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)

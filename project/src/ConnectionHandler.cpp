@@ -7,7 +7,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "../include/RequestLine.hpp"
+#include "../include/Request.hpp"
 
 void ConnectionHandler::handle(int client_fd)
 {
@@ -26,7 +26,7 @@ void ConnectionHandler::handle(int client_fd)
 
     std::string firstLine = request.substr(0, request.find("\r\n"));
 
-    RequestLine req = parseRequestLine(firstLine);
+    Request req = parseRequestLine(firstLine);
 
     std::string path = req.uri;
     if (path == "/")

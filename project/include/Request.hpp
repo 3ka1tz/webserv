@@ -2,11 +2,11 @@
 
 #include <string>
 
-struct RequestLine
+struct Request
 {
     std::string method;
     std::string uri;
     std::string version;
 };
 
-RequestLine parseRequestLine(const std::string& line);
+Request parseRequestLine(const std::string& line);
