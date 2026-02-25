@@ -1,10 +1,29 @@
-#include "../include/Request.hpp"
-#include "../include/Response.hpp"
-#include "../include/Utils.hpp"
+#include "../include/Delete.hpp"
 
 #include <unistd.h>
 
 #include <cstdio>
+#include <fstream>
+
+bool fileExists(const std::string& path)
+{
+    std::ifstream file(path.c_str());
+
+    return file.good();
+}
+
+std::string getParentDirectory(const std::string& path)
+{
+    std::string::size_type pos = path.find_last_of('/');
+
+    if (pos == std::string::npos)
+        return ".";
+
+    if (pos == 0)
+        return "/";
+
+    return path.substr(0, pos);
+}
 
 bool isDeletable(const std::string& path)
 {
@@ -13,9 +32,9 @@ bool isDeletable(const std::string& path)
     return access(dir.c_str(), W_OK | X_OK) == 0;
 }
 
-void DELETE(const Request& req, Response& res)
+void handleDELETE(const Request& req, Response& res)
 {
-    std::string path = resolvePath(req.uri);
+    std::string path = req.uri;
 
     if (!fileExists(path))
     {
@@ -29,6 +48,6 @@ void DELETE(const Request& req, Response& res)
         return;
     }
 
-    remove(path.c_str());
+    std::remove(path.c_str());
     res.status = 204;
 }
