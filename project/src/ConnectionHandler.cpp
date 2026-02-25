@@ -8,21 +8,47 @@
 #include <sstream>
 
 #include "../include/Request.hpp"
+#include "../include/Response.hpp"
 
 void ConnectionHandler::handle(int client_fd)
 {
-    char buffer[4096];
-
-    int bytes = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
+    char buf[4096];
+    ssize_t bytes = recv(client_fd, buf, sizeof(buf) - 1, 0);
     if (bytes <= 0)
     {
         close(client_fd);
         return;
     }
+    buf[bytes] = '\0';
 
-    buffer[bytes] = '\0';
+    std::string raw(buf);
+    Request req = parseRequest(raw);
 
-    std::string request(buffer);
+    Response res;
+
+    handleRequest(req, res);
+    if (res.status_code >= 400)
+        loadErrorPage(res.status_code);
+
+    std::string http = buildHttpResponse(res);
+
+    send(client_fd, http.c_str(), http.size(), 0);
+
+    close(client_fd);
+}
+
+/*void ConnectionHandler::handle(int client_fd)
+{
+    char buf[4096];
+    ssize_t bytes = recv(client_fd, buf, sizeof(buf) - 1, 0);
+    if (bytes <= 0)
+    {
+        close(client_fd);
+        return;
+    }
+    buf[bytes] = '\0';
+
+    std::string request(buf);
 
     std::string firstLine = request.substr(0, request.find("\r\n"));
 
@@ -59,4 +85,4 @@ void ConnectionHandler::handle(int client_fd)
     send(client_fd, respStr.c_str(), respStr.size(), 0);
 
     close(client_fd);
-}
+}*/
