@@ -1,6 +1,9 @@
 #pragma once
 
+#include <string>
+
 struct Response
 {
-    int status;
+    std::string body;
+    int status_code;
 };

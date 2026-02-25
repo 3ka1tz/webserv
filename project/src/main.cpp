@@ -1,5 +1,5 @@
 #include "../include/ConnectionHandler.hpp"
-#include "../include/ServerSocket.hpp"
+#include "../include/Server.hpp"
 
 #include <sys/socket.h>
 #include <unistd.h>
