@@ -3,10 +3,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
 #include "../include/Methods.hpp"
 #include "../include/Request.hpp"
 #include "../include/Response.hpp"
