@@ -18,11 +18,11 @@ void loadErrorPage(Response& res)
     std::ifstream file(path.c_str());
     if (!file)
     {
-        res.body = "<h1>Error " + intToString(res.status_code) + "<h1>";
+        res.body = "<h1>Error " + intToString(res.status_code) + "</h1>";
         return;
     }
 
-    std::stringstream buffer;
-    buffer << file.rdbuf();
-    res.body = buffer.str();
+    std::stringstream buf;
+    buf << file.rdbuf();
+    res.body = buf.str();
 }

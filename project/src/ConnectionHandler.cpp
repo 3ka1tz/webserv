@@ -7,8 +7,21 @@
 #include <iostream>
 #include <sstream>
 
+#include "../include/Methods.hpp"
 #include "../include/Request.hpp"
 #include "../include/Response.hpp"
+
+void handleRequest(const Request& req, Response& res)
+{
+    if (req.method == "GET")
+        handleGET(req, res);
+    else if (req.method == "POST")
+        handlePOST(req, res);
+    else if (req.method == "DELETE")
+        handleDELETE(req, res);
+    else
+        res.status_code = 405;
+}
 
 void ConnectionHandler::handle(int client_fd)
 {
@@ -28,7 +41,7 @@ void ConnectionHandler::handle(int client_fd)
 
     handleRequest(req, res);
     if (res.status_code >= 400)
-        loadErrorPage(res.status_code);
+        loadErrorPage(res);
 
     std::string http = buildHttpResponse(res);
 
