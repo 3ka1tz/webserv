@@ -8,6 +8,7 @@ SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/ConnectionHandler.cpp \
        $(SRC_DIR)/Methods.cpp \
        $(SRC_DIR)/Request.cpp \
+       $(SRC_DIR)/Response.cpp \
        $(SRC_DIR)/Server.cpp \
        $(SRC_DIR)/Tokenizer.cpp
 

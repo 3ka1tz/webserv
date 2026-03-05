@@ -7,7 +7,7 @@
 #include "../include/Request.hpp"
 #include "../include/Response.hpp"
 
-void handleRequest(const Request& req, Response& res)
+/*void handleRequest(const Request& req, Response& res)
 {
     if (req.method == "GET")
         handleGET(req, res);
@@ -31,7 +31,7 @@ void ConnectionHandler::handle(int client_fd)
     buf[bytes] = '\0';
 
     std::string raw(buf);
-    Request req = parseRequest(raw);
+    Request req = parseRequestLine(raw);
 
     Response res;
 
@@ -44,20 +44,26 @@ void ConnectionHandler::handle(int client_fd)
     send(client_fd, http.c_str(), http.size(), 0);
 
     close(client_fd);
-}
+}*/
 
-/*void ConnectionHandler::handle(int client_fd)
+// Esto de momento funciona, pero entiendo que sería mejor y más limpio hacerlo como el de arriba.
+#include <fstream>
+#include <iostream>
+#include <sstream>
+void ConnectionHandler::handle(int client_fd)
 {
-    char buf[4096];
-    ssize_t bytes = recv(client_fd, buf, sizeof(buf) - 1, 0);
+    char buffer[4096];
+
+    int bytes = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
     if (bytes <= 0)
     {
         close(client_fd);
         return;
     }
-    buf[bytes] = '\0';
 
-    std::string request(buf);
+    buffer[bytes] = '\0';
+
+    std::string request(buffer);
 
     std::string firstLine = request.substr(0, request.find("\r\n"));
 
@@ -94,4 +100,4 @@ void ConnectionHandler::handle(int client_fd)
     send(client_fd, respStr.c_str(), respStr.size(), 0);
 
     close(client_fd);
-}*/
+}
