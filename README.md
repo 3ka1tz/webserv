@@ -12,20 +12,19 @@ This project aims to create your own HTTP server. You will be able to test it wi
 ```bash
 git clone https://github.com/3ka1tz/webserv.git
 ```
-2. Enter the project directory:
+2. Change the working directory:
 ```bash
 cd ~/webserv/
 ```
-3. Build the server:
+3. Build the project:
 ```bash
 make
 ```
-4. Run the server:
+4. Run the generated executable:
 ```bash
 ./webserv
-./webserv <configuration_file>
 ```
-5. Open the web browser of your choice and go to http://localhost:8080.
+5. Navigate to http://localhost:8080.
 
 ## Resources
 
