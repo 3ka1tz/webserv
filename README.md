@@ -1,6 +1,6 @@
 # Webserv
 
-This project has been created as part of the 42 curriculum by [elopez-u](https://profile.intra.42.fr/users/elopez-u) and [iullibar](https://profile.intra.42.fr/users/iullibar).
+This project has been created as part of the 42 curriculum by [elopez-u](https://profile.intra.42.fr/users/elopez-u) and [mdiaz-or](https://profile.intra.42.fr/users/mdiaz-or).
 
 ## Description
 
@@ -24,10 +24,7 @@ make
 ```bash
 ./webserv
 ```
-5. Open the web browser of your choice and go to:
-```bash
-http://localhost:8080
-```
+5. Open the web browser of your choice and go to http://localhost:8080.
 
 ## Resources
 
