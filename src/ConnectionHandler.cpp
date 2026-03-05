@@ -80,7 +80,8 @@ void ConnectionHandler::handle(int client_fd)
     if (notFound)
     {
         file.close();
-        file.open("./www/error_pages/404.html");
+        path = "./www/error_pages/404.html";
+        file.open(path.c_str(), std::ios::binary);
     }
 
     std::string body((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
