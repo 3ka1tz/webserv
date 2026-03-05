@@ -4,6 +4,25 @@
 #include <sstream>
 #include <string>
 
+bool endsWith(const std::string& str, const std::string& suffix)
+{
+    if (str.length() < suffix.length())
+        return false;
+
+    return str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
+
+std::string getMimeType(const std::string& path)
+{
+    if (endsWith(path, ".html"))
+        return "text/html";
+
+    if (endsWith(path, ".ico"))
+        return "image/x-icon";
+
+    return "application/octet-stream";
+}
+
 std::string buildHttpResponse(const Response& res)
 {
     std::ostringstream oss;
@@ -35,7 +54,7 @@ void loadErrorPage(Response& res)
         return;
     }
 
-    std::stringstream buf;
-    buf << file.rdbuf();
-    res.body = buf.str();
+    std::stringstream ss;
+    ss << file.rdbuf();
+    res.body = ss.str();
 }

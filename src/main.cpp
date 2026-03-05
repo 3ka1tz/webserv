@@ -10,9 +10,10 @@
 
 int main(int argc, char ** argv)
 {
-    if (argc > 2)
+     if (argc > 2)
     {
-        std::cerr << "Usage: " << argv[0] << " [configuration file]\n";
+        std::cerr << "Usage: " << argv[0] << " [configuration file]\n"
+                  << "If no file is provided, ../conf/default.conf is used.\n";
         return 1;
     }
 

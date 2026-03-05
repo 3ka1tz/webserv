@@ -50,6 +50,7 @@ void ConnectionHandler::handle(int client_fd)
 #include <fstream>
 #include <iostream>
 #include <sstream>
+
 void ConnectionHandler::handle(int client_fd)
 {
     char buffer[4096];
@@ -69,11 +70,11 @@ void ConnectionHandler::handle(int client_fd)
 
     Request req = parseRequestLine(firstLine);
 
-    std::string path = req.uri;
-    if (path == "/")
+    std::string path = "./www" + req.uri;
+    if (req.uri == "/")
         path = "./www/index.html";
 
-    std::ifstream file(path.c_str());
+    std::ifstream file(path.c_str(), std::ios::binary);
     bool notFound = !file.is_open();
 
     if (notFound)
@@ -91,7 +92,7 @@ void ConnectionHandler::handle(int client_fd)
         response << "HTTP/1.1 200 OK\r\n";
 
     response << "Content-Length: " << body.size() << "\r\n"
-                << "Content-Type: text/html\r\n"
+                << "Content-Type: " << getMimeType(path) << "\r\n"
                 << "\r\n"
                 << body;
 

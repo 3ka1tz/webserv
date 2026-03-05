@@ -41,7 +41,7 @@ int createServerSocket(int port)
         exit(1);
     }
 
-    std::cout << "Server listening on port " << port << std::endl;
+    std::cout << "Server listening on port " << port << std::endl; // deberíamos de no imprimir esto y registrarlo en un logger
 
     return server_fd;
 }
