@@ -26,6 +26,8 @@ int main(int argc, char ** argv)
 
     int server_fd = createServerSocket(8080);
     ConnectionHandler handler;
+    // aquí deberíamos implementar poll/epoll..., para poder gestionar múltiples solicitudes
+    // estaría más limpio si sacamos este loop del main y lo convertimos en una función
     while (true)
     {
         int client_fd = accept(server_fd, NULL, NULL);
