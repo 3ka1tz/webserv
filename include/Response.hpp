@@ -4,8 +4,9 @@
 
 struct Response
 {
-    std::string body;
     int status_code;
+    std::string body;
+    std::string path;
 };
 
 std::string getMimeType(const std::string& path);

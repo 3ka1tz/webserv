@@ -7,7 +7,7 @@
 #include "../include/Request.hpp"
 #include "../include/Response.hpp"
 
-/*void handleRequest(const Request& req, Response& res)
+void handleRequest(const Request& req, Response& res)
 {
     if (req.method == "GET")
         handleGET(req, res);
@@ -31,7 +31,8 @@ void ConnectionHandler::handle(int client_fd)
     buf[bytes] = '\0';
 
     std::string raw(buf);
-    Request req = parseRequestLine(raw);
+    std::string requestLine = raw.substr(0, raw.find("\r\n"));
+    Request req = parseRequestLine(requestLine);
 
     Response res;
 
@@ -39,15 +40,15 @@ void ConnectionHandler::handle(int client_fd)
     if (res.status_code >= 400)
         loadErrorPage(res);
 
-    std::string http = buildHttpResponse(res);
+    std::string http = buildHttpResponse(res).c_str();
 
     send(client_fd, http.c_str(), http.size(), 0);
 
     close(client_fd);
-}*/
+}
 
 // Esto de momento funciona, pero entiendo que sería mejor y más limpio hacerlo como el de arriba.
-#include <fstream>
+/*#include <fstream>
 #include <iostream>
 #include <sstream>
 
@@ -102,4 +103,4 @@ void ConnectionHandler::handle(int client_fd)
     send(client_fd, respStr.c_str(), respStr.size(), 0);
 
     close(client_fd);
-}
+}*/

@@ -29,7 +29,7 @@ std::string buildHttpResponse(const Response& res)
 
     oss << "HTTP/1.1 " << res.status_code << "\r\n"
         << "Content-Length: " << res.body.size() << "\r\n"
-        << "Content-Type: text/html\r\n" 
+        << "Content-Type: " << getMimeType(res.path) << "\r\n"
         << "\r\n"
         << res.body;
 
@@ -45,9 +45,9 @@ std::string intToString(const int status_code)
 
 void loadErrorPage(Response& res)
 {
-    std::string path = "./www/error_pages/" + intToString(res.status_code) + ".html";
+    res.path = "./www/error_pages/" + intToString(res.status_code) + ".html";
 
-    std::ifstream file(path.c_str());
+    std::ifstream file(res.path.c_str());
     if (!file)
     {
         res.body = "<h1>Error " + intToString(res.status_code) + "</h1>";

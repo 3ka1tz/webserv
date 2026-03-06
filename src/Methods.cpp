@@ -4,6 +4,7 @@
 
 #include <cstdio>
 #include <fstream>
+#include <sstream>
 
 bool fileExists(const std::string& path)
 {
@@ -34,21 +35,24 @@ bool havePermissions(const std::string& path)
 
 void handleGET(const Request& req, Response& res)
 {
-    std::string path = req.uri;
+    std::string path = "./www" + req.uri;
 
-    if (path == "/")
+    if (req.uri == "/")
         path = "./www/index.html";
 
     std::ifstream file(path.c_str());
     if (!file.is_open())
     {
         res.status_code = 404;
-        //res.body = loadFile("./www/error_pages/404.html");
+        res.path = "./www/error_pages/404.html";
         return;
     }
 
     res.status_code = 200;
-    //res.body = loadFile(path);
+    std::stringstream ss;
+    ss << file.rdbuf();
+    res.body = ss.str();
+    res.path = path;
 }
 
 void handlePOST(const Request& req, Response& res)
