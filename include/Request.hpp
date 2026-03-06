@@ -11,4 +11,4 @@ struct Request
     std::string body;
 };
 
-Request parseRequestLine(const std::string& line);
+Request parseRequestLine(const std::string& requestLine);

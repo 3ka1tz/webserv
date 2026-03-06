@@ -3,9 +3,9 @@
 #include <sstream>
 #include <stdexcept>
 
-Request parseRequestLine(const std::string& line)
+Request parseRequestLine(const std::string& requestLine)
 {
-    std::istringstream iss(line);
+    std::istringstream iss(requestLine);
     Request req;
 
     if(!(iss >> req.method >> req.uri >> req.version))
