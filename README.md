@@ -1,6 +1,6 @@
 # Webserv
 
-This project has been created as part of the 42 curriculum by [elopez-u](https://profile.intra.42.fr/users/elopez-u) and [mdiaz-or](https://profile.intra.42.fr/users/mdiaz-or).
+This project has been created as part of the 42 curriculum by [elopez-u](https://profile.intra.42.fr/users/elopez-u).
 
 ## Description
 
