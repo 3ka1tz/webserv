@@ -1,0 +1,314 @@
+#include "../include/MethodHandler.hpp"
+
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <vector>
+
+#include "../include/CgiHandler.hpp"
+
+MethodHandler::MethodHandler(const HttpRequest& req, const LocationConfig& loc) : req(req), loc(loc) {}
+
+MethodHandler::MethodHandler(const MethodHandler& other) : req(other.req), loc(other.loc) {}
+
+MethodHandler& MethodHandler::operator=(const MethodHandler& other)
+{
+    if (this != &other)
+    {
+        req = other.req;
+        loc = other.loc;
+    }
+    return *this;
+}
+
+MethodHandler::~MethodHandler() {}
+
+HttpResponse MethodHandler::handleMethod()
+{
+    if (req.getMethod() == "GET")
+        return handleGet();
+    if (req.getMethod() == "POST")
+        return handlePost();
+    if (req.getMethod() == "DELETE")
+        return handleDelete();
+
+    return HttpResponse::buildErrorPage(405);
+}
+
+HttpResponse MethodHandler::handleGet()
+{
+    std::string path = resolvePath(req.getUri());
+
+    if (!exists(path))
+        return HttpResponse::buildErrorPage(404);
+
+    if (isDirectory(path))
+    {
+        if (req.uri.back() != '/')
+            return redirectTo(req.uri + "/");
+
+        std::string index = path + "index.html";
+
+        if (exists(index))
+        {
+            std::string content = fileToString(index);
+
+            HttpResponse res;
+            res.setStatusCode(200);
+            res.setHttpHeader("Content-Type", getMimeType(index));
+            res.setMessageBody(content);
+
+            return res;
+        }
+
+        if (loc.isAutoindexEnabled())
+        {
+            std::string listing = buildDirectoryListing(path);
+
+            HttpResponse res;
+            res.setStatusCode(200);
+            res.setHttpHeader("Content-Type", "text/html");
+            res.setMessageBody(listing);
+
+            return res;
+        }
+
+        return HttpResponse::buildErrorPage(403);
+    }
+
+    std::string content = fileToString(path);
+
+    HttpResponse res;
+    res.setStatusCode(200);
+    res.setHttpHeader("Content-Type", getMimeType(path));
+    res.setMessageBody(content);
+
+    return res;
+}
+
+HttpResponse MethodHandler::handlePost()
+{
+    if (req.body.size() > loc.getClientMaxBodySize())
+        return HttpResponse::buildErrorPage(413);
+
+    if (loc.isCgiEnabled())
+        return handleCGI();
+
+    if (!loc.getUploadPath().empty())
+    {
+        std::string filename = generateUploadFilename();
+        std::string fullPath = loc.getUploadPath() + "/" + filename;
+
+        std::ofstream out(fullPath.c_str(), std::ios::binary);
+        if (!out)
+            return HttpResponse::buildErrorPage(500);
+
+        out.write(req.body.data(), req.body.size());
+        out.close();
+
+        HttpResponse res;
+        res.setStatusCode(201);
+        res.setMessageBody("<html><body><h1>File uploaded</h1></body></html>");
+
+        return res;
+    }
+
+    return HttpResponse::buildErrorPage(405);
+}
+
+HttpResponse MethodHandler::handleDelete()
+{
+    std::string path = resolvePath(req.getUri());
+
+    if (!exists(path))
+        return HttpResponse::buildErrorPage(404);
+
+    if (isDirectory(path))
+        return HttpResponse::buildErrorPage(403);
+
+    if (std::remove(path.c_str()) != 0)
+        return HttpResponse::buildErrorPage(500);
+
+    HttpResponse res;
+    res.setStatusCode(204);
+    res.setMessageBody("");
+
+    return res;
+}
+
+std::string MethodHandler::resolvePath(const std::string& uri) const
+{
+    std::string path = loc.getRoot();
+
+    if (!path.empty() && path[path.size() - 1] == '/')
+        path.erase(path.size() - 1);
+
+    if (!uri.empty() && uri[0] == '/')
+        path += uri;
+    else
+        path += '/' + uri;
+
+    std::vector<std::string> parts;
+    std::stringstream ss(path);
+    std::string item;
+
+    while (std::getline(ss, item, '/'))
+    {
+        if (item == "" || item == ".")
+            continue;
+
+        if (item == "..")
+        {
+            if (!parts.empty())
+                parts.pop_back();
+
+            continue;
+        }
+
+        parts.push_back(item);
+    }
+
+    std::string clean = "/";
+
+    for (size_t i = 0; i < parts.size(); ++i)
+    {
+        clean += parts[i];
+
+        if (i + 1 < parts.size())
+            clean += '/';
+    }
+
+    return clean;
+}
+
+HttpResponse MethodHandler::redirectTo(const std::string& newLocation)
+{
+    HttpResponse res;
+    res.setStatusCode(301);
+    res.setHttpHeader("Location", newLocation);
+
+    std::string body = "<html><body><h1>301 Moved Permanently</h1></body></html>";
+    res.setMessageBody(body);
+
+    return res;
+}
+
+bool exists(const std::string& path)
+{
+    struct stat s;
+    return (stat(path.c_str(), &s) == 0);
+}
+
+bool isDirectory(const std::string& path)
+{
+    struct stat s;
+    return (stat(path.c_str(), &s) == 0 && S_ISDIR(s.st_mode));
+}
+
+std::string fileToString(const std::string& path)
+{
+    std::ifstream file(path.c_str());
+    if (!file.is_open())
+        throw std::runtime_error("Failed to open file");
+
+    std::ostringstream oss;
+    oss << file.rdbuf();
+    return oss.str();
+}
+
+std::string getMimeType(const std::string& path)
+{
+    static std::map<std::string, std::string> mime_types;
+
+    if (mime_types.empty())
+    {
+        mime_types[".css"]  = "text/css";
+        mime_types[".html"] = "text/html";
+        mime_types[".txt"]  = "text/plain";
+
+        mime_types[".js"]   = "application/javascript";
+        mime_types[".json"] = "application/json";
+        mime_types[".pdf"]  = "application/pdf";
+        mime_types[".xml"]  = "application/xml";
+        mime_types[".zip"]  = "application/zip";
+
+        mime_types[".gif"]  = "image/gif";
+        mime_types[".ico"]  = "image/x-icon";
+        mime_types[".jpg"]  = "image/jpeg";
+        mime_types[".jpeg"] = "image/jpeg";
+        mime_types[".png"]  = "image/png";
+        mime_types[".svg"]  = "image/svg+xml";
+
+        mime_types[".mp3"]  = "audio/mpeg";
+        mime_types[".mp4"]  = "video/mp4";
+
+        mime_types[".woff"]  = "font/woff";
+        mime_types[".woff2"] = "font/woff2";
+        mime_types[".otf"]   = "font/otf";
+        mime_types[".ttf"]   = "font/ttf";
+    }
+
+    size_t dot_pos = path.rfind('.');
+
+    if (dot_pos != std::string::npos)
+    {
+        std::string ext = path.substr(dot_pos);
+
+        for (size_t i = 0; i < ext.size(); ++i)
+            ext[i] = std::tolower(ext[i]);
+
+        if (mime_types.count(ext))
+            return mime_types[ext];
+    }
+
+    return "application/octet-stream";
+}
+
+std::vector<std::string> listDirectories(const std::string& dirPath)
+{
+    std::vector<std::string> entries;
+
+    DIR* dir = opendir(dirPath.c_str());
+    if (!dir)
+        return entries;
+
+    struct dirent* entry;
+    while ((entry = readdir(dir)))
+    {
+        std::string name = entry->d_name;
+
+        if (name == "." || name == "..")
+            continue;
+
+        entries.push_back(name);
+    }
+
+    closedir(dir);
+
+    std::sort(entries.begin(), entries.end());
+
+    return entries;
+}
+
+std::string buildDirectoryListing(const std::string& dirPath)
+{
+    std::vector<std::string> entries = listDirectories(dirPath);
+
+    std::string dirList = "<html><body><h1>Index of " + dirPath + "</h1><ul>";
+
+    for (std::vector<std::string>::const_iterator it = entries.begin(); it != entries.end(); ++it)
+    {
+        const std::string& entry = *it;
+
+        dirList += "<li><a href=\"" + entry + "\">" + entry + "</a></li>";
+    }
+
+    dirList += "</ul></body></html>";
+
+    return dirList;
+}
