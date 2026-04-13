@@ -5,6 +5,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "../include/Utils.hpp"
+
 std::vector<std::string> CgiHandler::buildEnv(const HttpRequest& req, const std::string& scriptPath)
 {
     std::vector<std::string> env;
@@ -16,7 +18,12 @@ std::vector<std::string> CgiHandler::buildEnv(const HttpRequest& req, const std:
     env.push_back("QUERY_STRING=" + req.getQuery());
 
     env.push_back("SCRIPT_NAME=" + req.getPath());
-    env.push_back("SCRIPT_FILENAME=" + scriptPath); // Puede que sea innecesario
+    env.push_back("SCRIPT_FILENAME=" + scriptPath);
+
+    // env.push_back("SERVER_NAME=" + req.getHost());
+    // env.push_back("SERVER_PORT=" + req.getPort());
+
+    // env.push_back("REMOTE_ADDR=" + req.getClientIP());
 
     if (req.hasHeader("Content-Type"))
         env.push_back("CONTENT_TYPE=" + req.getHeader("Content-Type"));
@@ -24,22 +31,49 @@ std::vector<std::string> CgiHandler::buildEnv(const HttpRequest& req, const std:
     if (req.hasHeader("Content-Length"))
         env.push_back("CONTENT_LENGTH=" + req.getHeader("Content-Length"));
 
-    env.push_back("REDIRECT_STATUS=200");  // Puede que sea innecesario
+    appendHttpHeadersToEnv(req.getHeaders(), env);
+
+    env.push_back("REDIRECT_STATUS=200");
 
     return env;
 }
 
-const char* PYTHON_INTERPwrittenNowER = "/usr/bin/python3";
-
-std::vector<const char*> CgiHandler::buildArgs(const std::string& scriptPath)
+void CgiHandler::appendHttpHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env)
 {
-    std::vector<const char*> args;
+    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
+    {
+        std::string key = it->first;
+        std::string value = it->second;
 
-    args.push_back(PYTHON_INTERPwrittenNowER);
-    args.push_back(scriptPath.c_str());
-    args.push_back(NULL);
+        for (size_t i = 0; i < key.size(); ++i)
+        {
+            if (key[i] == '-')
+                key[i] = '_';
+            else
+                key[i] = std::toupper(key[i]);
+        }
 
-    return args;
+        env.push_back("HTTP_" + key + "=" + value);
+    }
+}
+
+std::string CgiHandler::getInterpreter(const std::string& path)
+{
+    static std::map<std::string, std::string> interpreters;
+
+    if (interpreters.empty())
+    {
+        interpreters[".php"] = "/usr/bin/php-cgi";
+        interpreters[".py"]  = "/usr/bin/python3";
+    }
+
+    std::string ext = getExtension(path);
+
+    std::map<std::string, std::string>::const_iterator it = interpreters.find(ext);
+    if (it != interpreters.end())
+        return it->second;
+
+    return "";
 }
 
 void CgiHandler::createPipes(int inPipe[2], int outPipe[2])
@@ -55,7 +89,7 @@ void CgiHandler::createPipes(int inPipe[2], int outPipe[2])
     }
 }
 
-pid_t CgiHandler::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::vector<const char*>& args)
+pid_t CgiHandler::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::string& scriptPath)
 {
     pid_t pid = fork();
     if (pid < 0)
@@ -71,12 +105,28 @@ pid_t CgiHandler::spawnChild(int inPipe[2], int outPipe[2], const std::vector<st
         close(outPipe[0]);
         close(outPipe[1]);
 
-        std::vector<const char*> envp;
+        size_t slash = scriptPath.find_last_of('/');
+        if (slash != std::string::npos)
+        {
+            std::string dir = scriptPath.substr(0, slash);
+            chdir(dir.c_str());
+        }
+
+        std::string interp = getInterpreter(scriptPath);
+        const char* interpreter = interp.c_str();
+
+        std::vector<char*> argv;
+        argv.reserve(3);
+        argv.push_back(const_cast<char*>(interpreter));
+        argv.push_back(const_cast<char*>(scriptPath.c_str()));
+        argv.push_back(NULL);
+
+        std::vector<char*> envp;
         for (size_t i = 0; i < env.size(); ++i)
-            envp.push_back(env[i].c_str());
+            envp.push_back(const_cast<char*>(env[i].c_str()));
         envp.push_back(NULL);
 
-        execve(args[0], const_cast<char* const*>(args.data()), const_cast<char* const*>(envp.data()));
+        execve(interpreter, argv.data(), envp.data());
 
         perror("execve");
         exit(1);
@@ -197,13 +247,12 @@ HttpResponse CgiHandler::parseCgiOutput(const std::string& raw)
 HttpResponse CgiHandler::handleCgi(const HttpRequest& req, const std::string& scriptPath)
 {
     std::vector<std::string> env = buildEnv(req, scriptPath);
-    std::vector<const char*> args = buildArgs(scriptPath);
 
     int inPipe[2];
     int outPipe[2];
     createPipes(inPipe, outPipe);
 
-    pid_t pid = spawnChild(inPipe, outPipe, env, args);
+    pid_t pid = spawnChild(inPipe, outPipe, env, scriptPath);
 
     writeBodyToChild(inPipe[1], req);
 

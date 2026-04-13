@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "../include/CgiHandler.hpp"
+#include "../include/Utils.hpp"
 
 MethodHandler::MethodHandler(const HttpRequest& req, const LocationConfig& loc) : req(req), loc(loc) {}
 
@@ -32,8 +33,10 @@ HttpResponse MethodHandler::handleMethod()
 {
     if (req.getMethod() == "GET")
         return handleGet();
+
     if (req.getMethod() == "POST")
         return handlePost();
+
     if (req.getMethod() == "DELETE")
         return handleDelete();
 
@@ -49,7 +52,7 @@ HttpResponse MethodHandler::handleGet()
 
     if (isDirectory(path))
     {
-        if (req.uri.back() != '/')
+        if (req.getUri().back() != '/')
             return redirectTo(req.uri + "/");
 
         std::string index = path + "index.html";
@@ -81,6 +84,9 @@ HttpResponse MethodHandler::handleGet()
         return HttpResponse::buildErrorPage(403);
     }
 
+    /* if (loc.isCgi(path))
+        return handleCgi(); */
+
     std::string content = fileToString(path);
 
     HttpResponse res;
@@ -96,13 +102,16 @@ HttpResponse MethodHandler::handlePost()
     if (req.body.size() > loc.getClientMaxBodySize())
         return HttpResponse::buildErrorPage(413);
 
-    if (loc.isCgiEnabled())
-        return handleCGI();
+    std::string path = resolvePath(req.getUri());
+
+    /* if (loc.isCgi(path))
+        return handleCgi(); */
 
     if (!loc.getUploadPath().empty())
     {
-        std::string filename = generateUploadFilename();
-        std::string fullPath = loc.getUploadPath() + "/" + filename;
+        // std::string filename = generateUploadFilename();
+        // std::string fullPath = loc.getUploadPath() + "/" + filename;
+        std::string fullPath = loc.getUploadPath() + "/upload1";
 
         std::ofstream out(fullPath.c_str(), std::ios::binary);
         if (!out)
@@ -201,13 +210,13 @@ HttpResponse MethodHandler::redirectTo(const std::string& newLocation)
 bool exists(const std::string& path)
 {
     struct stat s;
-    return (stat(path.c_str(), &s) == 0);
+    return stat(path.c_str(), &s) == 0;
 }
 
 bool isDirectory(const std::string& path)
 {
     struct stat s;
-    return (stat(path.c_str(), &s) == 0 && S_ISDIR(s.st_mode));
+    return stat(path.c_str(), &s) == 0 && S_ISDIR(s.st_mode);
 }
 
 std::string fileToString(const std::string& path)
@@ -253,18 +262,10 @@ std::string getMimeType(const std::string& path)
         mime_types[".ttf"]   = "font/ttf";
     }
 
-    size_t dot_pos = path.rfind('.');
+    std::string ext = getExtension(path);
 
-    if (dot_pos != std::string::npos)
-    {
-        std::string ext = path.substr(dot_pos);
-
-        for (size_t i = 0; i < ext.size(); ++i)
-            ext[i] = std::tolower(ext[i]);
-
-        if (mime_types.count(ext))
-            return mime_types[ext];
-    }
+    if (mime_types.count(ext))
+        return mime_types[ext];
 
     return "application/octet-stream";
 }
