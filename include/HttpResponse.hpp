@@ -1,8 +1,8 @@
 #ifndef HTTP_RESPONSE_HPP
 # define HTTP_RESPONSE_HPP
 
-#include <map>
-#include <string>
+# include <map>
+# include <string>
 
 class HttpResponse
 {
@@ -12,7 +12,7 @@ class HttpResponse
         HttpResponse& operator=(const HttpResponse& other);
         ~HttpResponse();
 
-        void setStatusLine(const std::string& httpVersion, int statusCode);
+        void setStatusCode(int statusCode);
         void setHttpHeader(const std::string& key, const std::string& value);
         void setMessageBody(const std::string& messageBody);
 
@@ -21,13 +21,12 @@ class HttpResponse
         static HttpResponse buildErrorPage(int statusCode);
 
     private:
-        std::string httpVersion;
+        const std::string httpVersion;
         int statusCode;
-        std::string reasonPhrase;
         std::map<std::string, std::string> httpHeaders;
         std::string messageBody;
 
-        static std::string getReasonPhrase(int statusCode);
+        static const char* getReasonPhrase(int statusCode);
 };
 
 #endif

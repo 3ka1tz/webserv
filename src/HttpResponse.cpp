@@ -2,22 +2,19 @@
 
 #include <sstream>
 
-HttpResponse::HttpResponse() : messageBody("")
+HttpResponse::HttpResponse() : httpVersion("HTTP/1.1"), statusCode(200)
 {
-    setStatusLine("HTTP/1.1", 200);
-    setHttpHeader("Content-Type", "text/html");
-    setHttpHeader("Content-Length", "0");
+    httpHeaders["Content-Type"] = "text/html";
+    httpHeaders["Connection"] = "close";
 }
 
-HttpResponse::HttpResponse(const HttpResponse& other) : httpVersion(other.httpVersion), statusCode(other.statusCode), reasonPhrase(other.reasonPhrase), httpHeaders(other.httpHeaders), messageBody(other.messageBody) {}
+HttpResponse::HttpResponse(const HttpResponse& other) : httpVersion(other.httpVersion), statusCode(other.statusCode), httpHeaders(other.httpHeaders), messageBody(other.messageBody) {}
 
 HttpResponse& HttpResponse::operator=(const HttpResponse& other)
 {
     if (this != &other)
     {
-        httpVersion = other.httpVersion;
         statusCode = other.statusCode;
-        reasonPhrase = other.reasonPhrase;
         httpHeaders = other.httpHeaders;
         messageBody = other.messageBody;
     }
@@ -26,11 +23,9 @@ HttpResponse& HttpResponse::operator=(const HttpResponse& other)
 
 HttpResponse::~HttpResponse() {}
 
-void HttpResponse::setStatusLine(const std::string& httpVersion, int statusCode)
+void HttpResponse::setStatusCode(int statusCode)
 {
-    this->httpVersion = httpVersion;
     this->statusCode = statusCode;
-    this->reasonPhrase = getReasonPhrase(statusCode);
 }
 
 void HttpResponse::setHttpHeader(const std::string& key, const std::string& value)
@@ -50,34 +45,29 @@ void HttpResponse::setMessageBody(const std::string& messageBody)
 std::string HttpResponse::serialize() const
 {
     std::ostringstream responseStream;
-
-    responseStream << httpVersion << " " << statusCode << " " << reasonPhrase << "\r\n";
+    responseStream << httpVersion << " " << statusCode << " " << getReasonPhrase(statusCode) << "\r\n";
 
     std::map<std::string, std::string>::const_iterator it;
-    for (it = httpHeaders.begin(); it != httpHeaders.end(); ++it) {
+    for (it = httpHeaders.begin(); it != httpHeaders.end(); ++it)
         responseStream << it->first << ": " << it->second << "\r\n";
-    }
 
     responseStream << "\r\n" << messageBody;
-
     return responseStream.str();
 }
 
 HttpResponse HttpResponse::buildErrorPage(int statusCode)
 {
-    HttpResponse response;
-
-    response.setHttpHeader("Content-Type", "text/html");
+    HttpResponse res;
+    res.setStatusCode(statusCode);
 
     std::ostringstream errorPage;
     errorPage << "<html><body><h1>" << statusCode << " " << getReasonPhrase(statusCode) << "</h1></body></html>";
+    res.setMessageBody(errorPage.str());
 
-    response.setMessageBody(errorPage.str());
-
-    return response;
+    return res;
 }
 
-std::string HttpResponse::getReasonPhrase(int statusCode)
+const char* HttpResponse::getReasonPhrase(int statusCode)
 {
     switch (statusCode)
     {
@@ -106,6 +96,6 @@ std::string HttpResponse::getReasonPhrase(int statusCode)
         case 503: return "Service Unavailable";
         case 504: return "Gateway Timeout";
         case 505: return "HTTP Version Not Supported";
-        default: return "Unknown";
+        default: return "";
     }
 }
