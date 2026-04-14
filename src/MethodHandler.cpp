@@ -59,11 +59,11 @@ HttpResponse MethodHandler::handleGet()
 
         if (exists(index))
         {
-            std::string content = fileToString(index);
-
             HttpResponse res;
             res.setStatusCode(200);
             res.setHttpHeader("Content-Type", getMimeType(index));
+
+            std::string content = fileToString(index);
             res.setMessageBody(content);
 
             return res;
@@ -71,11 +71,11 @@ HttpResponse MethodHandler::handleGet()
 
         if (loc.isAutoindexEnabled())
         {
-            std::string listing = buildDirectoryListing(path);
-
             HttpResponse res;
             res.setStatusCode(200);
             res.setHttpHeader("Content-Type", "text/html");
+
+            std::string listing = buildDirectoryListing(path);
             res.setMessageBody(listing);
 
             return res;
@@ -84,14 +84,14 @@ HttpResponse MethodHandler::handleGet()
         return HttpResponse::buildErrorPage(403);
     }
 
-    /* if (loc.isCgi(path))
-        return handleCgi(); */
-
-    std::string content = fileToString(path);
+    if (loc.isCgi(path))
+        return handleCgi();
 
     HttpResponse res;
     res.setStatusCode(200);
     res.setHttpHeader("Content-Type", getMimeType(path));
+
+    std::string content = fileToString(path);
     res.setMessageBody(content);
 
     return res;
@@ -104,8 +104,8 @@ HttpResponse MethodHandler::handlePost()
 
     std::string path = resolvePath(req.getUri());
 
-    /* if (loc.isCgi(path))
-        return handleCgi(); */
+    if (loc.isCgi(path))
+        return handleCgi();
 
     if (!loc.getUploadPath().empty())
     {
@@ -217,17 +217,6 @@ bool isDirectory(const std::string& path)
 {
     struct stat s;
     return stat(path.c_str(), &s) == 0 && S_ISDIR(s.st_mode);
-}
-
-std::string fileToString(const std::string& path)
-{
-    std::ifstream file(path.c_str());
-    if (!file.is_open())
-        throw std::runtime_error("Failed to open file");
-
-    std::ostringstream oss;
-    oss << file.rdbuf();
-    return oss.str();
 }
 
 std::string getMimeType(const std::string& path)

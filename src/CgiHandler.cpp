@@ -7,6 +7,26 @@
 
 #include "../include/Utils.hpp"
 
+HttpResponse CgiHandler::handleCgi(const HttpRequest& req, const std::string& scriptPath)
+{
+    std::vector<std::string> env = buildEnv(req, scriptPath);
+
+    int inPipe[2];
+    int outPipe[2];
+    createPipes(inPipe, outPipe);
+
+    pid_t pid = spawnChild(inPipe, outPipe, env, scriptPath);
+
+    writeBodyToChild(inPipe[1], req);
+
+    std::string rawOutput = readChildOutput(outPipe[0]);
+
+    int status;
+    waitpid(pid, &status, 0);
+
+    return parseCgiOutput(rawOutput);
+}
+
 std::vector<std::string> CgiHandler::buildEnv(const HttpRequest& req, const std::string& scriptPath)
 {
     std::vector<std::string> env;
@@ -242,24 +262,4 @@ HttpResponse CgiHandler::parseCgiOutput(const std::string& raw)
 
     res.setMessageBody(bodyPart);
     return res;
-}
-
-HttpResponse CgiHandler::handleCgi(const HttpRequest& req, const std::string& scriptPath)
-{
-    std::vector<std::string> env = buildEnv(req, scriptPath);
-
-    int inPipe[2];
-    int outPipe[2];
-    createPipes(inPipe, outPipe);
-
-    pid_t pid = spawnChild(inPipe, outPipe, env, scriptPath);
-
-    writeBodyToChild(inPipe[1], req);
-
-    std::string rawOutput = readChildOutput(outPipe[0]);
-
-    int status;
-    waitpid(pid, &status, 0);
-
-    return parseCgiOutput(rawOutput);
 }
