@@ -99,10 +99,10 @@ std::string CgiHandler::getInterpreter(const std::string& path)
 
     if (interpreters.empty())
     {
-        interpreters[".php"] = "/usr/bin/php-cgi";
+        interpreters[".sh"]  = "/bin/bash";
         interpreters[".pl"]  = "/usr/bin/perl";
         interpreters[".py"]  = "/usr/bin/python3";
-        interpreters[".sh"]  = "/bin/bash";
+        interpreters[".php"] = "/usr/bin/php-cgi";
     }
 
     std::string ext = getExtension(path);
