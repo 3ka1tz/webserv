@@ -34,3 +34,5 @@ std::string getMimeType(const std::string& path);
 std::string buildDirectoryListing(const std::string& dirPath);
 
 #endif
+
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods
