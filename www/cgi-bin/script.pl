@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+print "Content-Type: text/plain\n\n";
+
+print "Hello from Perl CGI!\n\n";
+
+print "Environment variables:\n";
+foreach my $key (sort keys %ENV)
+    print "$key = $ENV{$key}\n";
+
+print "\nPOST body:\n";
+my $body = do { local $/; <STDIN> };
+print $body;
