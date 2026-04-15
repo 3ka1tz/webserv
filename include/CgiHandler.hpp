@@ -9,14 +9,15 @@
 class CgiHandler
 {
     public:
-        CgiHandler();
-        CgiHandler(const CgiHandler& other);
-        CgiHandler& operator=(const CgiHandler& other);
         ~CgiHandler();
 
         HttpResponse handleCgi(const HttpRequest& req, const std::string& scriptPath);
 
     private:
+        CgiHandler();
+        CgiHandler(const CgiHandler& other);
+        CgiHandler& operator=(const CgiHandler& other);
+
         std::vector<std::string> buildEnv(const HttpRequest& req, const std::string& scriptPath);
         void appendHttpHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env);
         pid_t spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::string& scriptPath);
