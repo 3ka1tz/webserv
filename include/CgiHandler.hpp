@@ -9,6 +9,11 @@
 class CgiHandler
 {
     public:
+        CgiHandler();
+        CgiHandler(const CgiHandler& other);
+        CgiHandler& operator=(const CgiHandler& other);
+        ~CgiHandler();
+
         HttpResponse handleCgi(const HttpRequest& req, const std::string& scriptPath);
 
     private:
