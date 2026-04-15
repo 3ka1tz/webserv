@@ -3,7 +3,6 @@
 This project has been created as part of the 42 curriculum by [elopez-u](https://profile.intra.42.fr/users/elopez-u).
 
 Webserv is a team project. For now, this repository includes only the parts I worked on.
-I may add my full personal implementation in the future.
 
 ## Description
 
