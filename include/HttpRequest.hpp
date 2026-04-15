@@ -2,6 +2,7 @@
 # define HTTP_REQUEST_HPP
 
 # include <string>
+# include <map>
 
 class HttpRequest
 {
@@ -11,16 +12,23 @@ class HttpRequest
         HttpRequest& operator=(const HttpRequest& other);
         ~HttpRequest();
 
-        std::string getMethod() const;
-        std::string getBody() const;
-        std::string getQuery() const;
-        std::string getPath() const;
+        const std::string& getMethod() const;
+        const std::string& getPath() const;
+        const std::string& getQuery() const;
+        const std::string& getBody() const;
+        
+        bool containsHeader(const std::string& name) const;
+        std::string getHeaderValue(const std::string& name) const;
+
+        const std::map<std::string, std::string>& getHeaders() const;
 
     private:
         std::string method;
-        std::string body;
-        std::string query;
         std::string path;
+        std::string query;
+        std::string body;
+
+        std::map<std::string, std::string> headers; 
 };
 
 #endif
