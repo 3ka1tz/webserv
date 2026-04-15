@@ -13,6 +13,7 @@ class HttpRequest
         ~HttpRequest();
 
         const std::string& getMethod() const;
+        const std::string& getUri() const;
         const std::string& getPath() const;
         const std::string& getQuery() const;
         const std::string& getBody() const;
@@ -24,6 +25,7 @@ class HttpRequest
 
     private:
         std::string method;
+        std::string uri;
         std::string path;
         std::string query;
         std::string body;
