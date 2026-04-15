@@ -11,7 +11,7 @@ class CgiHandler
     public:
         ~CgiHandler();
 
-        HttpResponse handleCgi(const HttpRequest& req, const std::string& scriptPath);
+        static HttpResponse handleCgi(const HttpRequest& req, const std::string& scriptPath);
 
     private:
         CgiHandler();

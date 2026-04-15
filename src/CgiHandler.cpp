@@ -7,20 +7,6 @@
 
 #include "../include/Utils.hpp"
 
-CgiHandler::CgiHandler(const HttpRequest& req, const LocationConfig& loc) : req(req), loc(loc) {}
-
-CgiHandler::CgiHandler(const CgiHandler& other) : req(other.req), loc(other.loc) {}
-
-CgiHandler& CgiHandler::operator=(const CgiHandler& other)
-{
-    if (this != &other)
-    {
-        req = other.req;
-        loc = other.loc;
-    }
-    return *this;
-}
-
 CgiHandler::~CgiHandler() {}
 
 HttpResponse CgiHandler::handleCgi(const HttpRequest& req, const std::string& scriptPath)
@@ -61,11 +47,11 @@ std::vector<std::string> CgiHandler::buildEnv(const HttpRequest& req, const std:
 
     // env.push_back("REMOTE_ADDR=" + req.getClientIP());
 
-    if (req.hasHeader("Content-Type"))
-        env.push_back("CONTENT_TYPE=" + req.getHeader("Content-Type"));
+    if (req.containsHeader("Content-Type"))
+        env.push_back("CONTENT_TYPE=" + req.getHeaderValue("Content-Type"));
 
-    if (req.hasHeader("Content-Length"))
-        env.push_back("CONTENT_LENGTH=" + req.getHeader("Content-Length"));
+    if (req.containsHeader("Content-Length"))
+        env.push_back("CONTENT_LENGTH=" + req.getHeaderValue("Content-Length"));
 
     appendHttpHeadersToEnv(req.getHeaders(), env);
 

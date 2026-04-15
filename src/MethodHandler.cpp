@@ -53,7 +53,7 @@ HttpResponse MethodHandler::handleGet()
     if (isDirectory(path))
     {
         if (req.getUri().back() != '/')
-            return redirectTo(req.uri + "/");
+            return redirectTo(req.getUri() + "/");
 
         std::string index = path + "index.html";
 
@@ -85,7 +85,7 @@ HttpResponse MethodHandler::handleGet()
     }
 
     if (loc.isCgi(path))
-        return handleCgi();
+        return CgiHandler::handleCgi(req, path);
 
     HttpResponse res;
     res.setStatusCode(200);
@@ -99,13 +99,13 @@ HttpResponse MethodHandler::handleGet()
 
 HttpResponse MethodHandler::handlePost()
 {
-    if (req.body.size() > loc.getClientMaxBodySize())
+    if (req.getBody().size() > loc.getClientMaxBodySize())
         return HttpResponse::buildErrorPage(413);
 
     std::string path = resolvePath(req.getUri());
 
     if (loc.isCgi(path))
-        return handleCgi();
+        return CgiHandler::handleCgi(req, path);
 
     if (!loc.getUploadPath().empty())
     {
@@ -117,7 +117,7 @@ HttpResponse MethodHandler::handlePost()
         if (!out)
             return HttpResponse::buildErrorPage(500);
 
-        out.write(req.body.data(), req.body.size());
+        out.write(req.getBody().data(), req.getBody().size());
         out.close();
 
         HttpResponse res;
