@@ -7,6 +7,22 @@
 
 #include "../include/Utils.hpp"
 
+CgiHandler::CgiHandler(const HttpRequest& req, const LocationConfig& loc) : req(req), loc(loc) {}
+
+CgiHandler::CgiHandler(const CgiHandler& other) : req(other.req), loc(other.loc) {}
+
+CgiHandler& CgiHandler::operator=(const CgiHandler& other)
+{
+    if (this != &other)
+    {
+        req = other.req;
+        loc = other.loc;
+    }
+    return *this;
+}
+
+CgiHandler::~CgiHandler() {}
+
 HttpResponse CgiHandler::handleCgi(const HttpRequest& req, const std::string& scriptPath)
 {
     std::vector<std::string> env = buildEnv(req, scriptPath);
@@ -84,7 +100,9 @@ std::string CgiHandler::getInterpreter(const std::string& path)
     if (interpreters.empty())
     {
         interpreters[".php"] = "/usr/bin/php-cgi";
+        interpreters[".pl"]  = "/usr/bin/perl";
         interpreters[".py"]  = "/usr/bin/python3";
+        interpreters[".sh"]  = "/bin/bash";
     }
 
     std::string ext = getExtension(path);
