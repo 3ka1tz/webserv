@@ -17,8 +17,6 @@ class CgiHandler
         HttpResponse handleCgi(const HttpRequest& req, const std::string& scriptPath);
 
     private:
-        HttpResponse parseCgiOutput(const std::string& raw);
-
         std::vector<std::string> buildEnv(const HttpRequest& req, const std::string& scriptPath);
         void appendHttpHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env);
         pid_t spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::string& scriptPath);
@@ -26,6 +24,7 @@ class CgiHandler
         std::string getInterpreter(const std::string& scriptPath);
         void writeBodyToChild(int writeFd, const HttpRequest& req);
         std::string readChildOutput(int readFd);
+        HttpResponse parseCgiOutput(const std::string& raw);
 };
 
 #endif
