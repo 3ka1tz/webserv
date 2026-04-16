@@ -13,15 +13,14 @@ class Methods
         Methods& operator=(const Methods& other);
         ~Methods();
 
-        Response handleMethod();
+        Response handleMethod(const Request& req);
 
     private:
-        Request req;
         LocationConfig loc;
 
-        Response handleGet();
-        Response handlePost();
-        Response handleDelete();
+        Response handleGet(const Request& req);
+        Response handlePost(const Request& req);
+        Response handleDelete(const Request& req);
 
         std::string resolvePath(const std::string& uri) const;
         Response redirectTo(const std::string& newLocation);

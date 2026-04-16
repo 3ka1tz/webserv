@@ -13,37 +13,34 @@
 #include "../include/Cgi.hpp"
 #include "../include/Utils.hpp"
 
-Methods::Methods(const Request& req, const LocationConfig& loc) : req(req), loc(loc) {}
+Methods::Methods(const Request& req, const LocationConfig& loc) : loc(loc) {}
 
-Methods::Methods(const Methods& other) : req(other.req), loc(other.loc) {}
+Methods::Methods(const Methods& other) : loc(other.loc) {}
 
 Methods& Methods::operator=(const Methods& other)
 {
     if (this != &other)
-    {
-        req = other.req;
         loc = other.loc;
-    }
     return *this;
 }
 
 Methods::~Methods() {}
 
-Response Methods::handleMethod()
+Response Methods::handleMethod(const Request& req)
 {
     if (req.getMethod() == "GET")
-        return handleGet();
+        return handleGet(req);
 
     if (req.getMethod() == "POST")
-        return handlePost();
+        return handlePost(req);
 
     if (req.getMethod() == "DELETE")
-        return handleDelete();
+        return handleDelete(req);
 
     return Response::buildErrorPage(405);
 }
 
-Response Methods::handleGet()
+Response Methods::handleGet(const Request& req)
 {
     std::string path = resolvePath(req.getUri());
 
@@ -97,21 +94,22 @@ Response Methods::handleGet()
     return res;
 }
 
-Response Methods::handlePost()
+Response Methods::handlePost(const Request& req)
 {
     if (req.getBody().size() > loc.getClientMaxBodySize())
         return Response::buildErrorPage(413);
 
     std::string path = resolvePath(req.getUri());
 
+    if (!exists(path) && loc.getUploadPath().empty())
+        return Response::buildErrorPage(404);
+
     if (loc.isCgi(path))
         return Cgi::handleCgi(req, path);
 
     if (!loc.getUploadPath().empty())
     {
-        // std::string filename = generateUploadFilename();
-        // std::string fullPath = loc.getUploadPath() + "/" + filename;
-        std::string fullPath = loc.getUploadPath() + "/upload1";
+        std::string fullPath = loc.getUploadPath() + getFilename(path);
 
         std::ofstream out(fullPath.c_str(), std::ios::binary);
         if (!out)
@@ -130,7 +128,7 @@ Response Methods::handlePost()
     return Response::buildErrorPage(405);
 }
 
-Response Methods::handleDelete()
+Response Methods::handleDelete(const Request& req)
 {
     std::string path = resolvePath(req.getUri());
 

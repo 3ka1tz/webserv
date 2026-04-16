@@ -19,6 +19,21 @@ std::string getExtension(const std::string& path)
     return ext;
 }
 
+std::string getFilename(const std::string& path)
+{
+    size_t lastSlash = path.find_last_of('/');
+    
+    if (lastSlash == std::string::npos)
+        return path;
+
+    std::string filename = path.substr(lastSlash + 1);
+
+    if (filename.empty())
+        return "default_upload";
+
+    return filename;
+}
+
 std::string fileToString(const std::string& path)
 {
     std::ifstream file(path.c_str());
