@@ -1,16 +1,16 @@
-#ifndef HTTP_REQUEST_HPP
-# define HTTP_REQUEST_HPP
+#ifndef REQUEST_HPP
+# define REQUEST_HPP
 
 # include <map>
 # include <string>
 
-class HttpRequest
+class Request
 {
     public:
-        HttpRequest();
-        HttpRequest(const HttpRequest& other);
-        HttpRequest& operator=(const HttpRequest& other);
-        ~HttpRequest();
+        Request();
+        Request(const Request& other);
+        Request& operator=(const Request& other);
+        ~Request();
 
         const std::string& getMethod() const;
         const std::string& getUri() const;

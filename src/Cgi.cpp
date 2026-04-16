@@ -1,4 +1,4 @@
-#include "../include/CgiHandler.hpp"
+#include "../include/Cgi.hpp"
 
 #include <sys/wait.h>
 
@@ -7,9 +7,9 @@
 
 #include "../include/Utils.hpp"
 
-CgiHandler::~CgiHandler() {}
+Cgi::~Cgi() {}
 
-HttpResponse CgiHandler::handleCgi(const HttpRequest& req, const std::string& scriptPath)
+Response Cgi::handleCgi(const Request& req, const std::string& scriptPath)
 {
     std::vector<std::string> env = buildEnv(req, scriptPath);
 
@@ -29,7 +29,7 @@ HttpResponse CgiHandler::handleCgi(const HttpRequest& req, const std::string& sc
     return parseCgiOutput(rawOutput);
 }
 
-std::vector<std::string> CgiHandler::buildEnv(const HttpRequest& req, const std::string& scriptPath)
+std::vector<std::string> Cgi::buildEnv(const Request& req, const std::string& scriptPath)
 {
     std::vector<std::string> env;
 
@@ -60,7 +60,7 @@ std::vector<std::string> CgiHandler::buildEnv(const HttpRequest& req, const std:
     return env;
 }
 
-void CgiHandler::appendHttpHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env)
+void Cgi::appendHttpHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env)
 {
     for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
     {
@@ -79,7 +79,7 @@ void CgiHandler::appendHttpHeadersToEnv(const std::map<std::string, std::string>
     }
 }
 
-std::string CgiHandler::getInterpreter(const std::string& path)
+std::string Cgi::getInterpreter(const std::string& path)
 {
     static std::map<std::string, std::string> interpreters;
 
@@ -100,7 +100,7 @@ std::string CgiHandler::getInterpreter(const std::string& path)
     return "";
 }
 
-void CgiHandler::createPipes(int inPipe[2], int outPipe[2])
+void Cgi::createPipes(int inPipe[2], int outPipe[2])
 {
     if (pipe(inPipe) == -1)
         throw std::runtime_error("Failed to create input pipe");
@@ -113,7 +113,7 @@ void CgiHandler::createPipes(int inPipe[2], int outPipe[2])
     }
 }
 
-pid_t CgiHandler::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::string& scriptPath)
+pid_t Cgi::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::string& scriptPath)
 {
     pid_t pid = fork();
     if (pid < 0)
@@ -162,7 +162,7 @@ pid_t CgiHandler::spawnChild(int inPipe[2], int outPipe[2], const std::vector<st
     return pid;
 }
 
-void CgiHandler::writeBodyToChild(int writeFd, const HttpRequest& req)
+void Cgi::writeBodyToChild(int writeFd, const Request& req)
 {
     if (req.getMethod() == "POST")
     {
@@ -184,7 +184,7 @@ void CgiHandler::writeBodyToChild(int writeFd, const HttpRequest& req)
     close(writeFd);
 }
 
-std::string CgiHandler::readChildOutput(int readFd)
+std::string Cgi::readChildOutput(int readFd)
 {
     std::string output;
     char buffer[4096];
@@ -206,9 +206,9 @@ std::string CgiHandler::readChildOutput(int readFd)
     return output;
 }
 
-HttpResponse CgiHandler::parseCgiOutput(const std::string& raw)
+Response Cgi::parseCgiOutput(const std::string& raw)
 {
-    HttpResponse res;
+    Response res;
     size_t pos = raw.find("\r\n\r\n");
     size_t sepLen = 4;
 

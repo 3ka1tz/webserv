@@ -1,4 +1,4 @@
-#include "../include/MethodHandler.hpp"
+#include "../include/Methods.hpp"
 
 #include <dirent.h>
 #include <sys/stat.h>
@@ -10,14 +10,14 @@
 #include <sstream>
 #include <vector>
 
-#include "../include/CgiHandler.hpp"
+#include "../include/Cgi.hpp"
 #include "../include/Utils.hpp"
 
-MethodHandler::MethodHandler(const HttpRequest& req, const LocationConfig& loc) : req(req), loc(loc) {}
+Methods::Methods(const Request& req, const LocationConfig& loc) : req(req), loc(loc) {}
 
-MethodHandler::MethodHandler(const MethodHandler& other) : req(other.req), loc(other.loc) {}
+Methods::Methods(const Methods& other) : req(other.req), loc(other.loc) {}
 
-MethodHandler& MethodHandler::operator=(const MethodHandler& other)
+Methods& Methods::operator=(const Methods& other)
 {
     if (this != &other)
     {
@@ -27,9 +27,9 @@ MethodHandler& MethodHandler::operator=(const MethodHandler& other)
     return *this;
 }
 
-MethodHandler::~MethodHandler() {}
+Methods::~Methods() {}
 
-HttpResponse MethodHandler::handleMethod()
+Response Methods::handleMethod()
 {
     if (req.getMethod() == "GET")
         return handleGet();
@@ -40,15 +40,15 @@ HttpResponse MethodHandler::handleMethod()
     if (req.getMethod() == "DELETE")
         return handleDelete();
 
-    return HttpResponse::buildErrorPage(405);
+    return Response::buildErrorPage(405);
 }
 
-HttpResponse MethodHandler::handleGet()
+Response Methods::handleGet()
 {
     std::string path = resolvePath(req.getUri());
 
     if (!exists(path))
-        return HttpResponse::buildErrorPage(404);
+        return Response::buildErrorPage(404);
 
     if (isDirectory(path))
     {
@@ -59,7 +59,7 @@ HttpResponse MethodHandler::handleGet()
 
         if (exists(index))
         {
-            HttpResponse res;
+            Response res;
             res.setStatusCode(200);
             res.setHttpHeader("Content-Type", getMimeType(index));
 
@@ -71,7 +71,7 @@ HttpResponse MethodHandler::handleGet()
 
         if (loc.isAutoindexEnabled())
         {
-            HttpResponse res;
+            Response res;
             res.setStatusCode(200);
             res.setHttpHeader("Content-Type", "text/html");
 
@@ -81,13 +81,13 @@ HttpResponse MethodHandler::handleGet()
             return res;
         }
 
-        return HttpResponse::buildErrorPage(403);
+        return Response::buildErrorPage(403);
     }
 
     if (loc.isCgi(path))
-        return CgiHandler::handleCgi(req, path);
+        return Cgi::handleCgi(req, path);
 
-    HttpResponse res;
+    Response res;
     res.setStatusCode(200);
     res.setHttpHeader("Content-Type", getMimeType(path));
 
@@ -97,15 +97,15 @@ HttpResponse MethodHandler::handleGet()
     return res;
 }
 
-HttpResponse MethodHandler::handlePost()
+Response Methods::handlePost()
 {
     if (req.getBody().size() > loc.getClientMaxBodySize())
-        return HttpResponse::buildErrorPage(413);
+        return Response::buildErrorPage(413);
 
     std::string path = resolvePath(req.getUri());
 
     if (loc.isCgi(path))
-        return CgiHandler::handleCgi(req, path);
+        return Cgi::handleCgi(req, path);
 
     if (!loc.getUploadPath().empty())
     {
@@ -115,42 +115,42 @@ HttpResponse MethodHandler::handlePost()
 
         std::ofstream out(fullPath.c_str(), std::ios::binary);
         if (!out)
-            return HttpResponse::buildErrorPage(500);
+            return Response::buildErrorPage(500);
 
         out.write(req.getBody().data(), req.getBody().size());
         out.close();
 
-        HttpResponse res;
+        Response res;
         res.setStatusCode(201);
         res.setMessageBody("<html><body><h1>File uploaded</h1></body></html>");
 
         return res;
     }
 
-    return HttpResponse::buildErrorPage(405);
+    return Response::buildErrorPage(405);
 }
 
-HttpResponse MethodHandler::handleDelete()
+Response Methods::handleDelete()
 {
     std::string path = resolvePath(req.getUri());
 
     if (!exists(path))
-        return HttpResponse::buildErrorPage(404);
+        return Response::buildErrorPage(404);
 
     if (isDirectory(path))
-        return HttpResponse::buildErrorPage(403);
+        return Response::buildErrorPage(403);
 
     if (std::remove(path.c_str()) != 0)
-        return HttpResponse::buildErrorPage(500);
+        return Response::buildErrorPage(500);
 
-    HttpResponse res;
+    Response res;
     res.setStatusCode(204);
     res.setMessageBody("");
 
     return res;
 }
 
-std::string MethodHandler::resolvePath(const std::string& uri) const
+std::string Methods::resolvePath(const std::string& uri) const
 {
     std::string path = loc.getRoot();
 
@@ -195,9 +195,9 @@ std::string MethodHandler::resolvePath(const std::string& uri) const
     return clean;
 }
 
-HttpResponse MethodHandler::redirectTo(const std::string& newLocation)
+Response Methods::redirectTo(const std::string& newLocation)
 {
-    HttpResponse res;
+    Response res;
     res.setStatusCode(301);
     res.setHttpHeader("Location", newLocation);
 

@@ -1,16 +1,16 @@
-#ifndef HTTP_RESPONSE_HPP
-# define HTTP_RESPONSE_HPP
+#ifndef RESPONSE_HPP
+# define RESPONSE_HPP
 
 # include <map>
 # include <string>
 
-class HttpResponse
+class Response
 {
     public:
-        HttpResponse();
-        HttpResponse(const HttpResponse& other);
-        HttpResponse& operator=(const HttpResponse& other);
-        ~HttpResponse();
+        Response();
+        Response(const Response& other);
+        Response& operator=(const Response& other);
+        ~Response();
 
         void setStatusCode(int statusCode);
         void setHttpHeader(const std::string& key, const std::string& value);
@@ -18,7 +18,7 @@ class HttpResponse
 
         std::string serialize() const;
 
-        static HttpResponse buildErrorPage(int statusCode);
+        static Response buildErrorPage(int statusCode);
 
     private:
         const std::string httpVersion;

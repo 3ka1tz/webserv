@@ -1,16 +1,16 @@
-#include "../include/HttpResponse.hpp"
+#include "../include/Response.hpp"
 
 #include <sstream>
 
-HttpResponse::HttpResponse() : httpVersion("HTTP/1.1"), statusCode(200)
+Response::Response() : httpVersion("HTTP/1.1"), statusCode(200)
 {
     httpHeaders["Content-Type"] = "text/html";
     httpHeaders["Connection"] = "close";
 }
 
-HttpResponse::HttpResponse(const HttpResponse& other) : httpVersion(other.httpVersion), statusCode(other.statusCode), httpHeaders(other.httpHeaders), messageBody(other.messageBody) {}
+Response::Response(const Response& other) : httpVersion(other.httpVersion), statusCode(other.statusCode), httpHeaders(other.httpHeaders), messageBody(other.messageBody) {}
 
-HttpResponse& HttpResponse::operator=(const HttpResponse& other)
+Response& Response::operator=(const Response& other)
 {
     if (this != &other)
     {
@@ -21,19 +21,19 @@ HttpResponse& HttpResponse::operator=(const HttpResponse& other)
     return *this;
 }
 
-HttpResponse::~HttpResponse() {}
+Response::~Response() {}
 
-void HttpResponse::setStatusCode(int statusCode)
+void Response::setStatusCode(int statusCode)
 {
     this->statusCode = statusCode;
 }
 
-void HttpResponse::setHttpHeader(const std::string& key, const std::string& value)
+void Response::setHttpHeader(const std::string& key, const std::string& value)
 {
     httpHeaders[key] = value;
 }
 
-void HttpResponse::setMessageBody(const std::string& messageBody)
+void Response::setMessageBody(const std::string& messageBody)
 {
     this->messageBody = messageBody;
 
@@ -42,7 +42,7 @@ void HttpResponse::setMessageBody(const std::string& messageBody)
     setHttpHeader("Content-Length", contentLength.str());
 }
 
-std::string HttpResponse::serialize() const
+std::string Response::serialize() const
 {
     std::ostringstream responseStream;
     responseStream << httpVersion << " " << statusCode << " " << getReasonPhrase(statusCode) << "\r\n";
@@ -55,9 +55,9 @@ std::string HttpResponse::serialize() const
     return responseStream.str();
 }
 
-HttpResponse HttpResponse::buildErrorPage(int statusCode)
+Response Response::buildErrorPage(int statusCode)
 {
-    HttpResponse res;
+    Response res;
     res.setStatusCode(statusCode);
 
     std::ostringstream errorPage;
@@ -67,7 +67,7 @@ HttpResponse HttpResponse::buildErrorPage(int statusCode)
     return res;
 }
 
-const char* HttpResponse::getReasonPhrase(int statusCode)
+const char* Response::getReasonPhrase(int statusCode)
 {
     switch (statusCode)
     {
