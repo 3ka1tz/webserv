@@ -131,12 +131,12 @@ pid_t Cgi::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::stri
         close(outPipe[0]);
         close(outPipe[1]);
 
-        std::string fileName = scriptPath; 
+        std::string filename = scriptPath; 
         size_t slash = scriptPath.find_last_of('/');
         if (slash != std::string::npos)
         {
             std::string dir = scriptPath.substr(0, slash);
-            fileName = scriptPath.substr(slash + 1);
+            filename = scriptPath.substr(slash + 1);
             chdir(dir.c_str());
         }
 
@@ -146,7 +146,7 @@ pid_t Cgi::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::stri
         std::vector<char*> argv;
         argv.reserve(3);
         argv.push_back(const_cast<char*>(interpreter));
-        argv.push_back(const_cast<char*>(fileName.c_str()));
+        argv.push_back(const_cast<char*>(filename.c_str()));
         argv.push_back(NULL);
 
         std::vector<char*> envp;
