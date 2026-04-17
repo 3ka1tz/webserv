@@ -31,8 +31,10 @@ int Response::getStatusCode() const
 const std::string Response::getHeaderValue(const std::string& key) const
 {
     std::map<std::string, std::string>::const_iterator it = httpHeaders.find(key);
+
     if (it != httpHeaders.end())
         return it->second;
+
     return "";
 }
 
