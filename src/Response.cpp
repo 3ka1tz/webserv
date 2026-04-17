@@ -23,6 +23,24 @@ Response& Response::operator=(const Response& other)
 
 Response::~Response() {}
 
+int Response::getStatusCode() const
+{
+    return statusCode;
+}
+
+const std::string Response::getHeaderValue(const std::string& key) const
+{
+    std::map<std::string, std::string>::const_iterator it = httpHeaders.find(key);
+    if (it != httpHeaders.end())
+        return it->second;
+    return "";
+}
+
+const std::string& Response::getMessageBody() const
+{
+    return messageBody;
+}
+
 void Response::setStatusCode(int statusCode)
 {
     this->statusCode = statusCode;

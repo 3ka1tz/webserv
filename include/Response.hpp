@@ -12,6 +12,10 @@ class Response
         Response& operator=(const Response& other);
         ~Response();
 
+        int getStatusCode() const;
+        const std::string getHeaderValue(const std::string& key) const;
+        const std::string& getMessageBody() const;
+
         void setStatusCode(int statusCode);
         void setHttpHeader(const std::string& key, const std::string& value);
         void setMessageBody(const std::string& messageBody);
