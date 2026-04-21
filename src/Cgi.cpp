@@ -51,10 +51,10 @@ std::vector<std::string> Cgi::buildEnv(const Request& req, const std::string& sc
     // env.push_back("REMOTE_ADDR=" + req.getClientIP());
 
     if (req.containsHeader("Content-Type"))
-        env.push_back("CONTENT_TYPE=" + req.getHttpHeader("Content-Type"));
+        env.push_back("CONTENT_TYPE=" + req.getHeader("Content-Type"));
 
     if (req.containsHeader("Content-Length"))
-        env.push_back("CONTENT_LENGTH=" + req.getHttpHeader("Content-Length"));
+        env.push_back("CONTENT_LENGTH=" + req.getHeader("Content-Length"));
 
     appendHttpHeadersToEnv(req.getHeaders(), env);
 
@@ -171,7 +171,7 @@ void Cgi::writeBodyToChild(int writeFd, const Request& req)
 {
     if (req.getMethod() == "POST")
     {
-        const std::string& body = req.getMessageBody();
+        const std::string& body = req.getBody();
         size_t bodySize = body.size();
         size_t totalWritten = 0;
 

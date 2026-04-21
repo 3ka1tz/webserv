@@ -16,7 +16,7 @@ int main()
         req.setHeader("Host", "localhost");
         req.setHeader("Content-Type", "text/plain");
         req.setHeader("Content-Length", "22");
-        req.setMessageBody("Testing GET method...");
+        req.setBody("Testing GET method...");
 
         std::string scriptPath = "www/cgi-bin/script.py";
 

@@ -97,7 +97,7 @@ Response Methods::handleGet(const Request& req)
 
 Response Methods::handlePost(const Request& req)
 {
-    if (req.getMessageBody().size() > conf.getClientMaxBodySize())
+    if (req.getBody().size() > conf.getClientMaxBodySize())
         return Response::buildErrorPage(413);
 
     std::string path = resolvePath(req.getUri());
@@ -116,7 +116,7 @@ Response Methods::handlePost(const Request& req)
         if (!out)
             return Response::buildErrorPage(500);
 
-        out.write(req.getMessageBody().data(), req.getMessageBody().size());
+        out.write(req.getBody().data(), req.getBody().size());
         out.close();
 
         Response res;

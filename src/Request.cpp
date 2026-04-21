@@ -1,6 +1,5 @@
 #include "../include/Request.hpp"
 
-/* Orthodox Canonical Class Form */
 Request::Request() {}
 Request::~Request() {}
 
@@ -8,22 +7,22 @@ const std::string& Request::getMethod() const { return method; }
 const std::string& Request::getUri() const { return uri; }
 const std::string& Request::getPath() const { return path; }
 const std::string& Request::getQuery() const { return query; }
-const std::string& Request::getMessageBody() const { return messageBody; }
+const std::string& Request::getBody() const { return body; }
 
 void Request::setMethod(const std::string& method) { this->method = method; }
 void Request::setUri(const std::string& uri) { this->uri = uri; }
 void Request::setPath(const std::string& path) { this->path = path; }
 void Request::setQuery(const std::string& query) { this->query = query; }
-void Request::setMessageBody(const std::string& messageBody) { this->messageBody = messageBody; }
+void Request::setBody(const std::string& body) { this->body = body; }
 
-bool Request::containsHeader(const std::string& name) const
+bool Request::containsHeader(const std::string& key) const
 {
-    return httpHeaders.find(name) != httpHeaders.end();
+    return headers.find(key) != headers.end();
 }
 
-std::string Request::getHttpHeader(const std::string& name) const
+std::string Request::getHeader(const std::string& key) const
 {
-    std::map<std::string, std::string>::const_iterator it = headers.find(name);
+    std::map<std::string, std::string>::const_iterator it = headers.find(key);
 
     if (it != headers.end())
         return it->second;
@@ -33,7 +32,7 @@ std::string Request::getHttpHeader(const std::string& name) const
 
 const std::map<std::string, std::string>& Request::getHeaders() const
 {
-    return httpHeaders;
+    return headers;
 }
 
 void Request::setHeader(const std::string& key, const std::string& value)

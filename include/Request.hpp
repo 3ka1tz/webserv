@@ -1,8 +1,8 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
-# include <map>
-# include <string>
+# include <map> // map
+# include <string> // string
 
 class Request
 {
@@ -16,16 +16,16 @@ class Request
         const std::string& getUri() const;
         const std::string& getPath() const;
         const std::string& getQuery() const;
-        const std::string& getMessageBody() const;
+        const std::string& getBody() const;
 
         void setMethod(const std::string& method);
         void setUri(const std::string& uri);
         void setPath(const std::string& path);
         void setQuery(const std::string& query);
-        void setMessageBody(const std::string& messageBody);
+        void setBody(const std::string& messageBody);
 
         bool containsHeader(const std::string& key) const;
-        std::string getHttpHeader(const std::string& key) const;
+        std::string getHeader(const std::string& key) const;
         const std::map<std::string, std::string>& getHeaders() const;
         void setHeader(const std::string& key, const std::string& value);
 
@@ -34,12 +34,10 @@ class Request
         std::string uri;
         std::string path;
         std::string query;
-        std::map<std::string, std::string> httpHeaders;
-        std::string messageBody;
-
-        std::map<std::string, std::string> headers; 
+        std::map<std::string, std::string> headers;
+        std::string body;
 };
 
-#endif
+#endif // REQUEST_HPP
 
 // https://en.wikipedia.org/wiki/HTTP#Request
