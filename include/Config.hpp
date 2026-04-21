@@ -7,17 +7,17 @@
 class Config
 {
     public:
+        size_t getClientMaxBodySize() const;
         std::string getRoot() const;
         std::string getUploadPath() const;
-        bool isCgi(const std::string& path) const;
-        size_t getClientMaxBodySize() const;
-        bool isAutoindexEnabled() const;
+        std::string getCgiExtension() const;
+        bool isAutoindex() const;
 
     private:
+        size_t clientMaxBodySize;
         std::string root;
         std::string uploadPath;
         std::string cgiExtension;
-        size_t clientMaxBodySize;
         bool autoindex;
 };
 
