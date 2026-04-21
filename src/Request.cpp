@@ -1,6 +1,8 @@
 #include "../include/Request.hpp"
 
 /* Orthodox Canonical Class Form */
+Request::Request() {}
+Request::~Request() {}
 
 const std::string& Request::getMethod() const { return method; }
 const std::string& Request::getUri() const { return uri; }
@@ -32,4 +34,9 @@ std::string Request::getHttpHeader(const std::string& name) const
 const std::map<std::string, std::string>& Request::getHeaders() const
 {
     return httpHeaders;
+}
+
+void Request::setHeader(const std::string& key, const std::string& value)
+{
+    headers[key] = value;
 }

@@ -5,6 +5,7 @@ OBJ_DIR = obj
 
 SRCS = $(SRC_DIR)/main.cpp \
        $(SRC_DIR)/Cgi.cpp \
+       $(SRC_DIR)/Config.cpp \
        $(SRC_DIR)/Methods.cpp \
        $(SRC_DIR)/Request.cpp \
        $(SRC_DIR)/Response.cpp \

@@ -67,7 +67,7 @@ Response Methods::handleGet(const Request& req)
             return res;
         }
 
-        if (conf.isAutoindexEnabled())
+        if (conf.isAutoindex())
         {
             Response res;
             res.setStatusCode(200);
@@ -82,8 +82,8 @@ Response Methods::handleGet(const Request& req)
         return Response::buildErrorPage(403);
     }
 
-    if (conf.isCgi(path))
-        return Cgi::handleCgi(req, path);
+    //if (conf.isCgi(path))
+        //return Cgi::handleCgi(req, path);
 
     Response res;
     res.setStatusCode(200);
@@ -105,8 +105,8 @@ Response Methods::handlePost(const Request& req)
     if (!exists(path) && conf.getUploadPath().empty())
         return Response::buildErrorPage(404);
 
-    if (conf.isCgi(path))
-        return Cgi::handleCgi(req, path);
+    //if (conf.isCgi(path))
+        //return Cgi::handleCgi(req, path);
 
     if (!conf.getUploadPath().empty())
     {

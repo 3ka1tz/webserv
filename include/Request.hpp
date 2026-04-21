@@ -24,9 +24,10 @@ class Request
         void setQuery(const std::string& query);
         void setMessageBody(const std::string& messageBody);
 
-        bool containsHeader(const std::string& name) const;
-        std::string getHttpHeader(const std::string& name) const;
+        bool containsHeader(const std::string& key) const;
+        std::string getHttpHeader(const std::string& key) const;
         const std::map<std::string, std::string>& getHeaders() const;
+        void setHeader(const std::string& key, const std::string& value);
 
     private:
         std::string method;

@@ -1,4 +1,4 @@
-/*#include <iostream> // cerr, cout, endl
+#include <iostream> // cerr, cout, endl
 
 #include "../include/Cgi.hpp"
 #include "../include/Request.hpp"
@@ -10,41 +10,24 @@ int main()
     {
         Request req;
 
-        std::string rawRequest = "GET /cgi-bin/script.py?user=admin HTTP/1.1\r\n"
-                                 "Host: localhost\r\n"
-                                 "Content-Type: text/plain\r\n"
-                                 "Content-Length: 22\r\n"
-                                 "\r\n"
-                                 "Testing GET method...";
+        req.setMethod("GET");
+        req.setPath("/cgi-bin/script.py");
+        req.setQuery("user=admin");
+        req.setHeader("Host", "localhost");
+        req.setHeader("Content-Type", "text/plain");
+        req.setHeader("Content-Length", "22");
+        req.setMessageBody("Testing GET method...");
 
-        // 2. Alimentamos al req
-        req.feed(rawRequest);
+        std::string scriptPath = "www/cgi-bin/script.py";
 
-        if (req.hasError()) {
-            std::cerr << "Error en el parseo: " << req.errorCode() << std::endl;
-            return 1;
-        }
+        Response res = Cgi::handleCgi(req, scriptPath);
 
-        if (req.isComplete()) {
-            // 3. Obtenemos la HttpRequest resultante (que es const)
-            const Request& req = req.get();
-
-            // 4. Ejecutamos el CGI
-            // Asegúrate de que "test.py" existe en tu carpeta actual
-            std::string scriptPath = "www/cgi-bin/script.py";
-            Response res = Cgi::handleCgi(req, scriptPath);
-
-            // 5. Mostramos el resultado
-            std::cout << "--- CGI OUTPUT ---" << std::endl;
-            std::cout << "Status: " << res.getStatusCode() << std::endl;
-            std::cout << "Body: " << res.getMessageBody() << std::endl;
-        } else {
-            std::cerr << "La petición no está completa (faltan datos)" << std::endl;
-        }
-
-    } catch (const std::exception& e) {
-        std::cerr << "Excepción: " << e.what() << std::endl;
+        std::cout << "CGI output:" << std::endl;
+        std::cout << "Status: " << res.getStatusCode() << std::endl;
+        std::cout << "Body: " << res.getMessageBody() << std::endl;
     }
-
-    return 0;
-}*/
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+}
