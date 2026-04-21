@@ -16,10 +16,16 @@ class Request
         const std::string& getUri() const;
         const std::string& getPath() const;
         const std::string& getQuery() const;
-        const std::string& getBody() const;
+        const std::string& getMessageBody() const;
+
+        void setMethod(const std::string& method);
+        void setUri(const std::string& uri);
+        void setPath(const std::string& path);
+        void setQuery(const std::string& query);
+        void setMessageBody(const std::string& messageBody);
 
         bool containsHeader(const std::string& name) const;
-        std::string getHeaderValue(const std::string& name) const;
+        std::string getHttpHeader(const std::string& name) const;
         const std::map<std::string, std::string>& getHeaders() const;
 
     private:
@@ -28,9 +34,11 @@ class Request
         std::string path;
         std::string query;
         std::map<std::string, std::string> httpHeaders;
-        std::string body;
+        std::string messageBody;
 
         std::map<std::string, std::string> headers; 
 };
 
 #endif
+
+// https://en.wikipedia.org/wiki/HTTP#Request

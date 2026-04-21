@@ -8,7 +8,7 @@
 class Methods
 {
     public:
-        Methods(const Request& req, const LocationConfig& loc);
+        Methods(const Config& conf);
         Methods(const Methods& other);
         Methods& operator=(const Methods& other);
         ~Methods();
@@ -16,7 +16,7 @@ class Methods
         Response handleMethod(const Request& req);
 
     private:
-        LocationConfig loc;
+        Config conf;
 
         Response handleGet(const Request& req);
         Response handlePost(const Request& req);

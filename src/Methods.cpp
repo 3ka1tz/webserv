@@ -13,14 +13,14 @@
 #include "../include/Cgi.hpp"
 #include "../include/Utils.hpp"
 
-Methods::Methods(const Request& req, const LocationConfig& loc) : loc(loc) {}
+Methods::Methods(const Config& conf) : conf(conf) {}
 
-Methods::Methods(const Methods& other) : loc(other.loc) {}
+Methods::Methods(const Methods& other) : conf(other.conf) {}
 
 Methods& Methods::operator=(const Methods& other)
 {
     if (this != &other)
-        loc = other.loc;
+        conf = other.conf;
     return *this;
 }
 
@@ -49,7 +49,8 @@ Response Methods::handleGet(const Request& req)
 
     if (isDirectory(path))
     {
-        if (req.getUri().back() != '/')
+        std::string uri = req.getUri();
+        if (!uri.empty() && uri[uri.length() - 1] != '/')
             return redirectTo(req.getUri() + "/");
 
         std::string index = path + "index.html";
@@ -66,7 +67,7 @@ Response Methods::handleGet(const Request& req)
             return res;
         }
 
-        if (loc.isAutoindexEnabled())
+        if (conf.isAutoindexEnabled())
         {
             Response res;
             res.setStatusCode(200);
@@ -81,7 +82,7 @@ Response Methods::handleGet(const Request& req)
         return Response::buildErrorPage(403);
     }
 
-    if (loc.isCgi(path))
+    if (conf.isCgi(path))
         return Cgi::handleCgi(req, path);
 
     Response res;
@@ -96,26 +97,26 @@ Response Methods::handleGet(const Request& req)
 
 Response Methods::handlePost(const Request& req)
 {
-    if (req.getBody().size() > loc.getClientMaxBodySize())
+    if (req.getMessageBody().size() > conf.getClientMaxBodySize())
         return Response::buildErrorPage(413);
 
     std::string path = resolvePath(req.getUri());
 
-    if (!exists(path) && loc.getUploadPath().empty())
+    if (!exists(path) && conf.getUploadPath().empty())
         return Response::buildErrorPage(404);
 
-    if (loc.isCgi(path))
+    if (conf.isCgi(path))
         return Cgi::handleCgi(req, path);
 
-    if (!loc.getUploadPath().empty())
+    if (!conf.getUploadPath().empty())
     {
-        std::string fullPath = loc.getUploadPath() + getFilename(path);
+        std::string fullPath = conf.getUploadPath() + getFilename(path);
 
         std::ofstream out(fullPath.c_str(), std::ios::binary);
         if (!out)
             return Response::buildErrorPage(500);
 
-        out.write(req.getBody().data(), req.getBody().size());
+        out.write(req.getMessageBody().data(), req.getMessageBody().size());
         out.close();
 
         Response res;
@@ -150,7 +151,7 @@ Response Methods::handleDelete(const Request& req)
 
 std::string Methods::resolvePath(const std::string& uri) const
 {
-    std::string path = loc.getRoot();
+    std::string path = conf.getRoot();
 
     if (!path.empty() && path[path.size() - 1] == '/')
         path.erase(path.size() - 1);

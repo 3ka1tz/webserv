@@ -1,9 +1,10 @@
 #include "../include/Cgi.hpp"
 
-#include <sys/wait.h>
+#include <sys/types.h> // pid_t
+#include <sys/wait.h> // waitpid
 
-#include <cstdlib>
-#include <cstdio>
+#include <cstdio> // perror
+#include <cstdlib> // atoi, exit
 #include <sstream>
 #include <stdexcept>
 
@@ -50,10 +51,10 @@ std::vector<std::string> Cgi::buildEnv(const Request& req, const std::string& sc
     // env.push_back("REMOTE_ADDR=" + req.getClientIP());
 
     if (req.containsHeader("Content-Type"))
-        env.push_back("CONTENT_TYPE=" + req.getHeaderValue("Content-Type"));
+        env.push_back("CONTENT_TYPE=" + req.getHttpHeader("Content-Type"));
 
     if (req.containsHeader("Content-Length"))
-        env.push_back("CONTENT_LENGTH=" + req.getHeaderValue("Content-Length"));
+        env.push_back("CONTENT_LENGTH=" + req.getHttpHeader("Content-Length"));
 
     appendHttpHeadersToEnv(req.getHeaders(), env);
 
@@ -170,7 +171,7 @@ void Cgi::writeBodyToChild(int writeFd, const Request& req)
 {
     if (req.getMethod() == "POST")
     {
-        const std::string& body = req.getBody();
+        const std::string& body = req.getMessageBody();
         size_t bodySize = body.size();
         size_t totalWritten = 0;
 
