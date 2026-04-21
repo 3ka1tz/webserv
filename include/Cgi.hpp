@@ -1,7 +1,11 @@
 #ifndef CGI_HPP
 # define CGI_HPP
 
-# include <vector>
+# include <sys/types.h> // pid_t
+
+# include <map> // map
+# include <string> // string
+# include <vector> // vector
 
 # include "Request.hpp"
 # include "Response.hpp"
@@ -28,6 +32,8 @@ class Cgi
         static Response parseCgiOutput(const std::string& raw);
 };
 
-#endif
+#endif // CGI_HPP
 
-// https://www.ibm.com/docs/es/netcoolomnibus/8.1.0?topic=scripts-environment-variables-in-cgi-script
+// https://en.wikipedia.org/wiki/Common_Gateway_Interface
+// https://www.ibm.com/docs/en/i/7.6.0?topic=functionality-cgi
+// https://www.ibm.com/docs/en/netcoolomnibus/8.1.0?topic=tools-creating-registering-cgi-scripts
