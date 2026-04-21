@@ -1,8 +1,8 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include <map>
-# include <string>
+# include <map> // map
+# include <string> // string
 
 class Response
 {
@@ -35,5 +35,6 @@ class Response
 
 #endif
 
-// https://www.ibm.com/docs/en/cics-ts/6.x?topic=protocol-http-responses
+// https://en.wikipedia.org/wiki/HTTP#Response
 // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+// https://www.ibm.com/docs/en/cics-ts/6.x?topic=protocol-http-responses

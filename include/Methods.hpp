@@ -1,9 +1,11 @@
 #ifndef METHODS_HPP
 # define METHODS_HPP
 
-#include "Config.hpp"
-#include "Request.hpp"
-#include "Response.hpp"
+# include <string> // string
+
+# include "Config.hpp"
+# include "Request.hpp"
+# include "Response.hpp"
 
 class Methods
 {
@@ -32,6 +34,7 @@ std::string fileToString(const std::string& path);
 std::string getMimeType(const std::string& path);
 std::string buildDirectoryListing(const std::string& dirPath);
 
-#endif
+#endif // METHODS_HPP
 
+// https://en.wikipedia.org/wiki/HTTP#Method
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods

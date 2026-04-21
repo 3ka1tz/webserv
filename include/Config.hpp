@@ -4,15 +4,6 @@
 # include <cstddef> // size_t
 # include <string> // string
 
-struct ServerConfig {};
-
-struct LocationConfig
-{
-
-    
-
-};
-
 class Config
 {
     public:
@@ -22,11 +13,7 @@ class Config
         size_t getClientMaxBodySize() const;
         bool isAutoindexEnabled() const;
 
-
     private:
-        ServerConfig serverConfig;
-        LocationConfig locationConfig;
-
         std::string root;
         std::string uploadPath;
         std::string cgiExtension;
@@ -34,4 +21,4 @@ class Config
         bool autoindex;
 };
 
-#endif
+#endif // CONFIG_HPP
