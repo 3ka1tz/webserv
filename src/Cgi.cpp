@@ -1,12 +1,12 @@
 #include "../include/Cgi.hpp"
 
-#include <sys/types.h> // pid_t
-#include <sys/wait.h> // waitpid
-
-#include <cstdio> // perror
-#include <cstdlib> // atoi, exit
+#include <cstdio>
+#include <cstdlib>
 #include <sstream>
 #include <stdexcept>
+
+#include <sys/types.h>
+#include <sys/wait.h>
 
 #include "../include/Utils.hpp"
 

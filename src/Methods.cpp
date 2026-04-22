@@ -1,14 +1,14 @@
 #include "../include/Methods.hpp"
 
-#include <dirent.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
+
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include "../include/Cgi.hpp"
 #include "../include/Utils.hpp"
