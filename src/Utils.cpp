@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <fstream>
 #include <sstream>
+#include <string>
 
 std::string getExtension(const std::string& path)
 {

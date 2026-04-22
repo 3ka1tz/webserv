@@ -56,14 +56,14 @@ std::vector<std::string> Cgi::buildEnv(const Request& req, const std::string& sc
     if (req.containsHeader("Content-Length"))
         env.push_back("CONTENT_LENGTH=" + req.getHeader("Content-Length"));
 
-    appendHttpHeadersToEnv(req.getHeaders(), env);
+    appendHeadersToEnv(req.getHeaders(), env);
 
     env.push_back("REDIRECT_STATUS=200");
 
     return env;
 }
 
-void Cgi::appendHttpHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env)
+void Cgi::appendHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env)
 {
     for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
     {

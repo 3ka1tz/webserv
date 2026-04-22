@@ -23,7 +23,7 @@ class Cgi
         Cgi& operator=(const Cgi& other);
 
         static std::vector<std::string> buildEnv(const Request& req, const std::string& scriptPath);
-        static void appendHttpHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env);
+        static void appendHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env);
         static pid_t spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::string& scriptPath);
         static void createPipes(int inPipe[2], int outPipe[2]);
         static std::string getInterpreter(const std::string& scriptPath);
