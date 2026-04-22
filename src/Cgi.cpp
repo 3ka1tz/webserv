@@ -226,7 +226,7 @@ Response Cgi::parseCgiOutput(const std::string& raw)
     if (pos == std::string::npos)
     {
         res.setStatusCode(200);
-        res.setMessageBody(raw);
+        res.setBody(raw);
         return res;
     }
 
@@ -262,13 +262,13 @@ Response Cgi::parseCgiOutput(const std::string& raw)
             while (!value.empty() && value[0] == ' ')
                 value.erase(0, 1);
 
-            res.setHttpHeader(key, value);
+            res.setHeader(key, value);
         }
     }
 
     if (!statusSet)
         res.setStatusCode(200);
 
-    res.setMessageBody(bodyPart);
+    res.setBody(bodyPart);
     return res;
 }

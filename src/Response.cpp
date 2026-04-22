@@ -4,19 +4,19 @@
 
 Response::Response() : httpVersion("HTTP/1.1"), statusCode(200)
 {
-    httpHeaders["Content-Type"] = "text/html";
-    httpHeaders["Connection"] = "close";
+    headers["Content-Type"] = "text/html";
+    headers["Connection"] = "close";
 }
 
-Response::Response(const Response& other) : httpVersion(other.httpVersion), statusCode(other.statusCode), httpHeaders(other.httpHeaders), messageBody(other.messageBody) {}
+Response::Response(const Response& other) : httpVersion(other.httpVersion), statusCode(other.statusCode), headers(other.headers), body(other.body) {}
 
 Response& Response::operator=(const Response& other)
 {
     if (this != &other)
     {
         statusCode = other.statusCode;
-        httpHeaders = other.httpHeaders;
-        messageBody = other.messageBody;
+        headers = other.headers;
+        body = other.body;
     }
     return *this;
 }
@@ -30,17 +30,17 @@ int Response::getStatusCode() const
 
 const std::string Response::getHeaderValue(const std::string& key) const
 {
-    std::map<std::string, std::string>::const_iterator it = httpHeaders.find(key);
+    std::map<std::string, std::string>::const_iterator it = headers.find(key);
 
-    if (it != httpHeaders.end())
+    if (it != headers.end())
         return it->second;
 
     return "";
 }
 
-const std::string& Response::getMessageBody() const
+const std::string& Response::getbody() const
 {
-    return messageBody;
+    return body;
 }
 
 void Response::setStatusCode(int statusCode)
@@ -48,18 +48,18 @@ void Response::setStatusCode(int statusCode)
     this->statusCode = statusCode;
 }
 
-void Response::setHttpHeader(const std::string& key, const std::string& value)
+void Response::setHeader(const std::string& key, const std::string& value)
 {
-    httpHeaders[key] = value;
+    headers[key] = value;
 }
 
-void Response::setMessageBody(const std::string& messageBody)
+void Response::setBody(const std::string& body)
 {
-    this->messageBody = messageBody;
+    this->body = body;
 
     std::ostringstream contentLength;
-    contentLength << messageBody.size();
-    setHttpHeader("Content-Length", contentLength.str());
+    contentLength << body.size();
+    setHeader("Content-Length", contentLength.str());
 }
 
 std::string Response::serialize() const
@@ -68,10 +68,10 @@ std::string Response::serialize() const
     responseStream << httpVersion << " " << statusCode << " " << getReasonPhrase(statusCode) << "\r\n";
 
     std::map<std::string, std::string>::const_iterator it;
-    for (it = httpHeaders.begin(); it != httpHeaders.end(); ++it)
+    for (it = headers.begin(); it != headers.end(); ++it)
         responseStream << it->first << ": " << it->second << "\r\n";
 
-    responseStream << "\r\n" << messageBody;
+    responseStream << "\r\n" << body;
     return responseStream.str();
 }
 
@@ -82,7 +82,7 @@ Response Response::buildErrorPage(int statusCode)
 
     std::ostringstream errorPage;
     errorPage << "<html><body><h1>" << statusCode << " " << getReasonPhrase(statusCode) << "</h1></body></html>";
-    res.setMessageBody(errorPage.str());
+    res.setBody(errorPage.str());
 
     return res;
 }

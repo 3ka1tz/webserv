@@ -59,10 +59,10 @@ Response Methods::handleGet(const Request& req)
         {
             Response res;
             res.setStatusCode(200);
-            res.setHttpHeader("Content-Type", getMimeType(index));
+            res.setHeader("Content-Type", getMimeType(index));
 
             std::string content = fileToString(index);
-            res.setMessageBody(content);
+            res.setBody(content);
 
             return res;
         }
@@ -71,10 +71,10 @@ Response Methods::handleGet(const Request& req)
         {
             Response res;
             res.setStatusCode(200);
-            res.setHttpHeader("Content-Type", "text/html");
+            res.setHeader("Content-Type", "text/html");
 
             std::string listing = buildDirectoryListing(path);
-            res.setMessageBody(listing);
+            res.setBody(listing);
 
             return res;
         }
@@ -87,10 +87,10 @@ Response Methods::handleGet(const Request& req)
 
     Response res;
     res.setStatusCode(200);
-    res.setHttpHeader("Content-Type", getMimeType(path));
+    res.setHeader("Content-Type", getMimeType(path));
 
     std::string content = fileToString(path);
-    res.setMessageBody(content);
+    res.setBody(content);
 
     return res;
 }
@@ -121,7 +121,7 @@ Response Methods::handlePost(const Request& req)
 
         Response res;
         res.setStatusCode(201);
-        res.setMessageBody("<html><body><h1>File uploaded</h1></body></html>");
+        res.setBody("<html><body><h1>File uploaded</h1></body></html>");
 
         return res;
     }
@@ -144,7 +144,7 @@ Response Methods::handleDelete(const Request& req)
 
     Response res;
     res.setStatusCode(204);
-    res.setMessageBody("");
+    res.setBody("");
 
     return res;
 }
@@ -198,10 +198,10 @@ Response Methods::redirectTo(const std::string& newLocation)
 {
     Response res;
     res.setStatusCode(301);
-    res.setHttpHeader("Location", newLocation);
+    res.setHeader("Location", newLocation);
 
     std::string body = "<html><body><h1>301 Moved Permanently</h1></body></html>";
-    res.setMessageBody(body);
+    res.setBody(body);
 
     return res;
 }

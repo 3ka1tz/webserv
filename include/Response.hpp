@@ -14,11 +14,11 @@ class Response
 
         int getStatusCode() const;
         const std::string getHeaderValue(const std::string& key) const;
-        const std::string& getMessageBody() const;
+        const std::string& getbody() const;
 
         void setStatusCode(int statusCode);
-        void setHttpHeader(const std::string& key, const std::string& value);
-        void setMessageBody(const std::string& messageBody);
+        void setHeader(const std::string& key, const std::string& value);
+        void setBody(const std::string& body);
 
         std::string serialize() const;
 
@@ -27,8 +27,8 @@ class Response
     private:
         const std::string httpVersion;
         int statusCode;
-        std::map<std::string, std::string> httpHeaders;
-        std::string messageBody;
+        std::map<std::string, std::string> headers;
+        std::string body;
 
         static const char* getReasonPhrase(int statusCode);
 };

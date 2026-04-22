@@ -21,7 +21,7 @@ int main()
 
         Response res = Cgi::handleCgi(req, scriptPath);
 
-        std::cout << '\n' << res.getMessageBody() << std::endl;
+        std::cout << '\n' << res.getbody() << std::endl;
     }
     catch (const std::exception& e)
     {
