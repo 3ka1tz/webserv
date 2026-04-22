@@ -1,8 +1,8 @@
 #ifndef CONFIG_HPP
 # define CONFIG_HPP
 
-# include <cstddef> // size_t
-# include <string> // string
+# include <cstddef>
+# include <string>
 
 class Config
 {
@@ -21,4 +21,4 @@ class Config
         bool autoindex;
 };
 
-#endif // CONFIG_HPP
+#endif

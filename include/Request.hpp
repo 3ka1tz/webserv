@@ -1,8 +1,8 @@
 #ifndef REQUEST_HPP
 # define REQUEST_HPP
 
-# include <map> // map
-# include <string> // string
+# include <map>
+# include <string>
 
 class Request
 {
@@ -38,6 +38,6 @@ class Request
         std::string body;
 };
 
-#endif // REQUEST_HPP
+#endif
 
 // https://en.wikipedia.org/wiki/HTTP#Request

@@ -1,7 +1,7 @@
 #ifndef METHODS_HPP
 # define METHODS_HPP
 
-# include <string> // string
+# include <string>
 
 # include "Config.hpp"
 # include "Request.hpp"
@@ -33,7 +33,7 @@ bool isDirectory(const std::string& path);
 std::string getMimeType(const std::string& path);
 std::string buildDirectoryListing(const std::string& dirPath);
 
-#endif // METHODS_HPP
+#endif
 
 // https://en.wikipedia.org/wiki/HTTP#Method
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods

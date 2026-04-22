@@ -1,8 +1,8 @@
 #ifndef RESPONSE_HPP
 # define RESPONSE_HPP
 
-# include <map> // map
-# include <string> // string
+# include <map>
+# include <string>
 
 class Response
 {

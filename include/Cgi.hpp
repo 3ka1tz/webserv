@@ -1,11 +1,11 @@
 #ifndef CGI_HPP
 # define CGI_HPP
 
-# include <sys/types.h> // pid_t
+# include <map>
+# include <string>
+# include <vector>
 
-# include <map> // map
-# include <string> // string
-# include <vector> // vector
+# include <sys/types.h>
 
 # include "Request.hpp"
 # include "Response.hpp"
@@ -32,7 +32,7 @@ class Cgi
         static Response parseCgiOutput(const std::string& raw);
 };
 
-#endif // CGI_HPP
+#endif
 
 // https://en.wikipedia.org/wiki/Common_Gateway_Interface
 // https://www.ibm.com/docs/en/i/7.6.0?topic=functionality-cgi
