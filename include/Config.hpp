@@ -13,6 +13,8 @@ class Config
         std::string getCgiExtension() const;
         bool isAutoindex() const;
 
+        bool isCgi(const std::string& path) const;
+
     private:
         size_t clientMaxBodySize;
         std::string root;

@@ -82,8 +82,8 @@ Response Methods::handleGet(const Request& req)
         return Response::buildErrorPage(403);
     }
 
-    //if (conf.isCgi(path))
-        //return Cgi::handleCgi(req, path);
+    if (conf.isCgi(path))
+        return Cgi::handleCgi(req, path);
 
     Response res;
     res.setStatusCode(200);
@@ -105,12 +105,16 @@ Response Methods::handlePost(const Request& req)
     if (!exists(path) && conf.getUploadPath().empty())
         return Response::buildErrorPage(404);
 
-    //if (conf.isCgi(path))
-        //return Cgi::handleCgi(req, path);
+    if (conf.isCgi(path))
+        return Cgi::handleCgi(req, path);
 
     if (!conf.getUploadPath().empty())
     {
-        std::string fullPath = conf.getUploadPath() + getFilename(path);
+        std::string uploadDir = conf.getUploadPath();
+        if (!uploadDir.empty() && uploadDir[uploadDir.size() - 1] != '/')
+            uploadDir += '/';
+
+        std::string fullPath = uploadDir + getFilename(path);
 
         std::ofstream out(fullPath.c_str(), std::ios::binary);
         if (!out)

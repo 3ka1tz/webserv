@@ -1,6 +1,7 @@
-#include <iostream> // cerr, cout, endl
+#include <iostream>
 
 #include "../include/Cgi.hpp"
+#include "../include/Methods.hpp"
 #include "../include/Request.hpp"
 #include "../include/Response.hpp"
 

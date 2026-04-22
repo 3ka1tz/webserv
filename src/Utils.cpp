@@ -8,27 +8,30 @@
 
 std::string getExtension(const std::string& path)
 {
-    size_t dot_pos = path.rfind('.');
-    if (dot_pos == std::string::npos)
+    std::string filename = getFilename(path);
+
+    size_t dot_pos = filename.rfind('.');
+    if (dot_pos == std::string::npos || dot_pos == 0)
         return "";
 
-    std::string ext = path.substr(dot_pos);
-
+    std::string ext = filename.substr(dot_pos);
     for (size_t i = 0; i < ext.size(); ++i)
-        ext[i] = std::tolower(ext[i]);
+        ext[i] = std::tolower(static_cast<unsigned char>(ext[i]));
 
     return ext;
 }
 
 std::string getFilename(const std::string& path)
 {
-    size_t lastSlash = path.find_last_of('/');
-    
+    std::string cleanPath = path;
+    if (cleanPath.length() > 1 && cleanPath[cleanPath.length() - 1] == '/')
+        cleanPath.erase(cleanPath.length() - 1);
+
+    size_t lastSlash = cleanPath.find_last_of('/');
     if (lastSlash == std::string::npos)
-        return path;
+        return cleanPath.empty() ? "default_upload" : cleanPath;
 
-    std::string filename = path.substr(lastSlash + 1);
-
+    std::string filename = cleanPath.substr(lastSlash + 1);
     if (filename.empty())
         return "default_upload";
 
