@@ -16,7 +16,7 @@ int main()
         req.setQuery("user=admin");
         req.setHeader("Host", "localhost");
         req.setHeader("Content-Type", "text/plain");
-        req.setHeader("Content-Length", "22");
+        req.setHeader("Content-Length", "10");
         req.setBody("Testing...");
 
         Response res = Cgi::handleCgi(req, scriptPath);

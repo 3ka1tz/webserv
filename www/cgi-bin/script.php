@@ -1,14 +1,17 @@
 #!/usr/bin/php-cgi
-<?php
 
+<?php
 header("Content-Type: text/plain");
 
 echo "Hello from PHP CGI!\n\n";
 
 echo "Environment variables:\n";
-foreach ($_SERVER as $key => $value)
+foreach (getenv() as $key => $value)
     echo "$key = $value\n";
 
-echo "\nPOST body:\n";
-$body = file_get_contents("php://input");
-echo $body;
+$method = getenv('REQUEST_METHOD');
+if ($method === 'POST') {
+    echo "\nPOST body:\n";
+    echo file_get_contents("php://input");
+}
+?>

@@ -9,6 +9,9 @@ echo
 echo "Environment variables:"
 env
 
-echo
-echo "POST body:"
-cat
+if [ "$REQUEST_METHOD" = "POST" ]; then
+    echo
+    echo "POST body:"
+    cat
+    echo
+fi

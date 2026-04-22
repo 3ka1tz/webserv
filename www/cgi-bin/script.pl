@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+
 use strict;
 use warnings;
 
@@ -11,7 +12,7 @@ foreach my $key (sort keys %ENV) {
     print "$key = $ENV{$key}\n";
 }
 
-my $method = $ENV{'REQUEST_METHOD'} || "GET";
+my $method = $ENV{'REQUEST_METHOD'};
 if ($method eq "POST") {
     print "\nPOST body:\n";
     my $body = do { local $/; <STDIN> };
