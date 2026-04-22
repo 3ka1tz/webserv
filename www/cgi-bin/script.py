@@ -13,6 +13,8 @@ print("Environment variables:")
 for key, value in os.environ.items():
     print(f"{key} = {value}")
 
-print("\nPOST body:")
-body = sys.stdin.read()
-print(body)
+method = os.environ["REQUEST_METHOD"]
+if method == "POST":
+    print("\nPOST body:")
+    body = sys.stdin.read()
+    print(body)

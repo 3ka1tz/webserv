@@ -22,7 +22,7 @@ class Request
         void setUri(const std::string& uri);
         void setPath(const std::string& path);
         void setQuery(const std::string& query);
-        void setBody(const std::string& messageBody);
+        void setBody(const std::string& body);
 
         bool containsHeader(const std::string& key) const;
         std::string getHeader(const std::string& key) const;

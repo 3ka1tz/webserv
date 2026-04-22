@@ -6,10 +6,11 @@
 
 int main()
 {
+    std::string scriptPath = "www/cgi-bin/script.py";
+
     try
     {
         Request req;
-
         req.setMethod("GET");
         req.setPath("/cgi-bin/script.py");
         req.setQuery("user=admin");
@@ -18,13 +19,9 @@ int main()
         req.setHeader("Content-Length", "22");
         req.setBody("Testing GET method...");
 
-        std::string scriptPath = "www/cgi-bin/script.py";
-
         Response res = Cgi::handleCgi(req, scriptPath);
 
-        std::cout << "CGI output:" << std::endl;
-        std::cout << "Status: " << res.getStatusCode() << std::endl;
-        std::cout << "Body: " << res.getMessageBody() << std::endl;
+        std::cout << res.getMessageBody() << std::endl;
     }
     catch (const std::exception& e)
     {
