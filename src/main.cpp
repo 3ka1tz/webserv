@@ -17,11 +17,11 @@ int main()
         req.setHeader("Host", "localhost");
         req.setHeader("Content-Type", "text/plain");
         req.setHeader("Content-Length", "22");
-        req.setBody("Testing GET method...");
+        req.setBody("Testing POST method...");
 
         Response res = Cgi::handleCgi(req, scriptPath);
 
-        std::cout << res.getMessageBody() << std::endl;
+        std::cout << '\n' << res.getMessageBody() << std::endl;
     }
     catch (const std::exception& e)
     {
