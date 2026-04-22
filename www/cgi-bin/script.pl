@@ -11,6 +11,10 @@ foreach my $key (sort keys %ENV) {
     print "$key = $ENV{$key}\n";
 }
 
-print "\nPOST body:\n";
-my $body = do { local $/; <STDIN> };
-print $body;
+my $method = $ENV{'REQUEST_METHOD'} || "GET";
+if ($method eq "POST") {
+    print "\nPOST body:\n";
+    my $body = do { local $/; <STDIN> };
+    print $body;
+    print "\n";
+}
