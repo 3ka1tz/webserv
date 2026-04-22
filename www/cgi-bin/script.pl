@@ -17,5 +17,4 @@ if ($method eq "POST") {
     print "\nPOST body:\n";
     my $body = do { local $/; <STDIN> };
     print $body;
-    print "\n";
 }

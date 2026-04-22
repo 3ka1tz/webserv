@@ -13,5 +13,4 @@ if [ "$REQUEST_METHOD" = "POST" ]; then
     echo
     echo "POST body:"
     cat
-    echo
 fi

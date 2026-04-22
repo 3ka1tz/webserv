@@ -45,7 +45,10 @@ Response Methods::handleGet(const Request& req)
     std::string path = resolvePath(req.getUri());
 
     if (!exists(path))
+    {
+        printf("%s\n", path.c_str());
         return Response::buildErrorPage(404);
+    }
 
     if (isDirectory(path))
     {
@@ -185,7 +188,7 @@ std::string Methods::resolvePath(const std::string& uri) const
         parts.push_back(item);
     }
 
-    std::string clean = "/";
+    std::string clean = "";
 
     for (size_t i = 0; i < parts.size(); ++i)
     {

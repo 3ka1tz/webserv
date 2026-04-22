@@ -1,18 +1,22 @@
 #include <iostream>
 
-#include "../include/Cgi.hpp"
 #include "../include/Methods.hpp"
 #include "../include/Request.hpp"
 #include "../include/Response.hpp"
 
 int main()
 {
-    const std::string scriptPath = "www/cgi-bin/script.py";
+    Config conf;
+    conf.setRoot("./www"); 
+    conf.setCgiExtension(".py");
+
+    Methods methods(conf);
 
     try
     {
         Request req;
         req.setMethod("GET");
+        req.setUri("/cgi-bin/script.py");
         req.setPath("/cgi-bin/script.py");
         req.setQuery("user=admin");
         req.setHeader("Host", "localhost");
@@ -20,9 +24,9 @@ int main()
         req.setHeader("Content-Length", "10");
         req.setBody("Testing...");
 
-        Response res = Cgi::handleCgi(req, scriptPath);
+        Response res = methods.handleMethod(req);
 
-        std::cout << '\n' << res.getbody() << std::endl;
+        std::cout << res.getbody() << std::endl;
     }
     catch (const std::exception& e)
     {

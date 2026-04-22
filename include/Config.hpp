@@ -13,6 +13,9 @@ class Config
         std::string getCgiExtension() const;
         bool isAutoindex() const;
 
+        void setRoot(const std::string& root);
+        void setCgiExtension(const std::string& cgiExtension);
+
         bool isCgi(const std::string& path) const;
 
     private:
