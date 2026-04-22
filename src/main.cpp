@@ -6,7 +6,7 @@
 
 int main()
 {
-    std::string scriptPath = "www/cgi-bin/script.py";
+    const std::string scriptPath = "www/cgi-bin/script.py";
 
     try
     {
