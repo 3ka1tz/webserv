@@ -7,3 +7,16 @@ Webserv is a team project. For now, this repository includes only the parts I wo
 ## Description
 
 This project aims to create your own HTTP server. You will be able to test it with a real web browser. HTTP is one of the most used protocols on the internet. Knowing its intricacies will be useful, even if web development is not on your carreer path.
+
+## Instructions
+
+...
+
+siege -c 25 -t 1m http://webserv.com
+
+-c 25: Simulates 25 concurrent users.
+-t 1m: Runs the test for 1 minute.
+
+## Resources
+https://github.com/42school/brew  
+https://formulae.brew.sh/formula/siege
