@@ -12,7 +12,7 @@ This project aims to create your own HTTP server. You will be able to test it wi
 
 ...
 
-siege -c 25 -t 1m http://webserv
+siege -c 25 -t 1m http\://webserv
 
 -c 25: Simulates 25 concurrent users.
 -t 1m: Runs the test for 1 minute.
