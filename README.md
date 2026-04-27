@@ -10,7 +10,25 @@ This project aims to create your own HTTP server. You will be able to test it wi
 
 ## Instructions
 
-...
+1. Clone the repository:
+```bash
+git clone https://github.com/3ka1tz/webserv.git
+```
+2. Change the working directory:
+```bash
+cd ~/webserv/
+```
+3. Build the project:
+```bash
+make
+```
+4. Run the generated executable:
+```bash
+./webserv
+```
+5. Navigate to http://localhost:8080.
+
+### Siege
 
 siege -c 25 -t 1m http\://webserv
 
