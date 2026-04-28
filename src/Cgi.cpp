@@ -70,6 +70,9 @@ void Cgi::appendHeadersToEnv(const std::map<std::string, std::string>& headers, 
         std::string key = it->first;
         std::string value = it->second;
 
+        if (key == "Content-Type" || key == "Content-Length")
+            continue;
+
         for (size_t i = 0; i < key.size(); ++i)
         {
             if (key[i] == '-')
