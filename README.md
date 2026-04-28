@@ -14,7 +14,7 @@ This project aims to create your own HTTP server. You will be able to test it wi
 ```bash
 git clone https://github.com/3ka1tz/webserv.git
 ```
-2. Change the working directory:
+2. Move into it:
 ```bash
 cd ~/webserv/
 ```
@@ -26,15 +26,6 @@ make
 ```bash
 ./webserv
 ```
-5. Navigate to http://localhost:8080.
-
-### Siege
-
-siege -c 25 -t 1m http\://webserv
-
--c 25: Simulates 25 concurrent users.  
--t 1m: Runs the test for 1 minute.
 
 ## Resources
-https://github.com/42school/brew  
-https://formulae.brew.sh/formula/siege
+https://en.wikipedia.org/wiki/HTTP
