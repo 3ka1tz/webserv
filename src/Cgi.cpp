@@ -14,13 +14,17 @@ Cgi::~Cgi() {}
 
 Response Cgi::handleCgi(const Request& req, const std::string& scriptPath)
 {
+    std::string interpreterPath = getInterpreter(scriptPath);
+    if (interpreterPath.empty())
+        return Response::buildErrorPage(403);
+
     std::vector<std::string> env = buildEnv(req, scriptPath);
 
     int inPipe[2];
     int outPipe[2];
     createPipes(inPipe, outPipe);
 
-    pid_t pid = spawnChild(inPipe, outPipe, env, scriptPath);
+    pid_t pid = spawnChild(scriptPath, interpreterPath, env, inPipe, outPipe);
 
     writeBodyToChild(inPipe[1], req);
 
@@ -30,6 +34,49 @@ Response Cgi::handleCgi(const Request& req, const std::string& scriptPath)
     waitpid(pid, &status, 0);
 
     return parseCgiOutput(rawOutput);
+}
+
+std::string Cgi::getInterpreter(const std::string& path)
+{
+    static std::map<std::string, std::string> interpreters;
+
+    if (interpreters.empty())
+    {
+        interpreters[".sh"] = "/bin/bash";
+        interpreters[".pl"] = "/usr/bin/perl";
+        interpreters[".py"] = "/usr/bin/python3";
+        interpreters[".php"] = "/usr/bin/php-cgi";
+    }
+
+    std::string ext = getExtension(path);
+
+    std::map<std::string, std::string>::const_iterator it = interpreters.find(ext);
+    if (it != interpreters.end())
+        return it->second;
+
+    return "";
+}
+
+void Cgi::appendHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env)
+{
+    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
+    {
+        std::string key = it->first;
+        std::string value = it->second;
+
+        if (key == "Content-Type" || key == "Content-Length")
+            continue;
+
+        for (size_t i = 0; i < key.size(); ++i)
+        {
+            if (key[i] == '-')
+                key[i] = '_';
+            else
+                key[i] = std::toupper(key[i]);
+        }
+
+        env.push_back("HTTP_" + key + "=" + value);
+    }
 }
 
 std::vector<std::string> Cgi::buildEnv(const Request& req, const std::string& scriptPath)
@@ -63,49 +110,6 @@ std::vector<std::string> Cgi::buildEnv(const Request& req, const std::string& sc
     return env;
 }
 
-void Cgi::appendHeadersToEnv(const std::map<std::string, std::string>& headers, std::vector<std::string>& env)
-{
-    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it)
-    {
-        std::string key = it->first;
-        std::string value = it->second;
-
-        if (key == "Content-Type" || key == "Content-Length")
-            continue;
-
-        for (size_t i = 0; i < key.size(); ++i)
-        {
-            if (key[i] == '-')
-                key[i] = '_';
-            else
-                key[i] = std::toupper(key[i]);
-        }
-
-        env.push_back("HTTP_" + key + "=" + value);
-    }
-}
-
-std::string Cgi::getInterpreter(const std::string& path)
-{
-    static std::map<std::string, std::string> interpreters;
-
-    if (interpreters.empty())
-    {
-        interpreters[".sh"]  = "/bin/bash";
-        interpreters[".pl"]  = "/usr/bin/perl";
-        interpreters[".py"]  = "/usr/bin/python3";
-        interpreters[".php"] = "/usr/bin/php-cgi";
-    }
-
-    std::string ext = getExtension(path);
-
-    std::map<std::string, std::string>::const_iterator it = interpreters.find(ext);
-    if (it != interpreters.end())
-        return it->second;
-
-    return "";
-}
-
 void Cgi::createPipes(int inPipe[2], int outPipe[2])
 {
     if (pipe(inPipe) == -1)
@@ -119,7 +123,7 @@ void Cgi::createPipes(int inPipe[2], int outPipe[2])
     }
 }
 
-pid_t Cgi::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::string>& env, const std::string& scriptPath)
+pid_t Cgi::spawnChild(const std::string& scriptPath, const std::string& interpreterPath, const std::vector<std::string>& env, int inPipe[2], int outPipe[2])
 {
     pid_t pid = fork();
     if (pid < 0)
@@ -144,8 +148,7 @@ pid_t Cgi::spawnChild(int inPipe[2], int outPipe[2], const std::vector<std::stri
             chdir(dir.c_str());
         }
 
-        std::string interp = getInterpreter(scriptPath);
-        const char* interpreter = interp.c_str();
+        const char* interpreter = interpreterPath.c_str();
 
         std::vector<char*> argv;
         argv.reserve(3);

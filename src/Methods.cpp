@@ -45,10 +45,7 @@ Response Methods::handleGet(const Request& req)
     std::string path = resolvePath(req.getUri());
 
     if (!exists(path))
-    {
-        printf("%s\n", path.c_str());
         return Response::buildErrorPage(404);
-    }
 
     if (isDirectory(path))
     {
@@ -87,6 +84,9 @@ Response Methods::handleGet(const Request& req)
 
     if (conf.isCgi(path))
         return Cgi::handleCgi(req, path);
+
+    if (!Cgi::getInterpreter(path).empty())
+        return Response::buildErrorPage(403);
 
     Response res;
     res.setStatusCode(200);

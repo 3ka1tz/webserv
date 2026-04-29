@@ -16,5 +16,5 @@ bool Config::isCgi(const std::string& path) const
     if (cgiExtension.empty())
         return false;
 
-    return (getExtension(path) == cgiExtension);
+    return getExtension(path) == cgiExtension;
 }
