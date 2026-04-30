@@ -19,14 +19,14 @@ int main()
         req.setUri("/cgi-bin/script.py");
         req.setPath("/cgi-bin/script.py");
         req.setQuery("user=admin");
-        req.setHeader("Host", "localhost");
-        req.setHeader("Content-Type", "text/plain");
-        req.setHeader("Content-Length", "10");
+        req.setHeaderValue("Host", "localhost");
+        req.setHeaderValue("Content-Type", "text/plain");
+        req.setHeaderValue("Content-Length", "10");
         req.setBody("Testing...");
 
         Response res = methods.handleMethod(req);
 
-        std::cout << res.getbody() << std::endl;
+        std::cout << res.getBody() << std::endl;
     }
     catch (const std::exception& e)
     {

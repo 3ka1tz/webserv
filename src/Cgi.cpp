@@ -267,7 +267,7 @@ Response Cgi::parseCgiOutput(const std::string& raw)
             while (!value.empty() && value[0] == ' ')
                 value.erase(0, 1);
 
-            res.setHeader(key, value);
+            res.setHeaderValue(key, value);
         }
     }
 

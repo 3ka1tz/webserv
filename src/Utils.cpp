@@ -18,19 +18,14 @@ std::string fileToString(const std::string& path)
 
 std::string getFilename(const std::string& path)
 {
-    if (path.empty())
+    if (path.empty() || (path.length() - 1) == '/')
         return ("");
 
-    std::string cleanPath = path;
-    size_t len = cleanPath.length();
-    if (len > 1 && cleanPath[len - 1] == '/')
-        cleanPath.erase(len - 1);
-
-    size_t lastSlash = cleanPath.find_last_of('/');
+    size_t lastSlash = path.find_last_of('/');
     if (lastSlash == std::string::npos)
-        return (cleanPath);
+        return (path);
 
-    return (cleanPath.substr(lastSlash + 1));
+    return (path.substr(lastSlash + 1));
 }
 
 std::string getExtension(const std::string& path)

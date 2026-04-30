@@ -35,7 +35,7 @@ const std::map<std::string, std::string>& Request::getHeaders() const
     return headers;
 }
 
-void Request::setHeader(const std::string& key, const std::string& value)
+void Request::setHeaderValue(const std::string& key, const std::string& value)
 {
     headers[key] = value;
 }

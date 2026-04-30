@@ -27,7 +27,7 @@ class Request
         bool containsHeader(const std::string& key) const;
         std::string getHeader(const std::string& key) const;
         const std::map<std::string, std::string>& getHeaders() const;
-        void setHeader(const std::string& key, const std::string& value);
+        void setHeaderValue(const std::string& key, const std::string& value);
 
     private:
         std::string method;

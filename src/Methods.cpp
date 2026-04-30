@@ -59,7 +59,7 @@ Response Methods::handleGet(const Request& req)
         {
             Response res;
             res.setStatusCode(200);
-            res.setHeader("Content-Type", getMimeType(index));
+            res.setHeaderValue("Content-Type", getMimeType(index));
 
             std::string content = fileToString(index);
             res.setBody(content);
@@ -71,7 +71,7 @@ Response Methods::handleGet(const Request& req)
         {
             Response res;
             res.setStatusCode(200);
-            res.setHeader("Content-Type", "text/html");
+            res.setHeaderValue("Content-Type", "text/html");
 
             std::string listing = buildDirectoryListing(path);
             res.setBody(listing);
@@ -90,7 +90,7 @@ Response Methods::handleGet(const Request& req)
 
     Response res;
     res.setStatusCode(200);
-    res.setHeader("Content-Type", getMimeType(path));
+    res.setHeaderValue("Content-Type", getMimeType(path));
 
     std::string content = fileToString(path);
     res.setBody(content);
@@ -205,7 +205,7 @@ Response Methods::redirectTo(const std::string& newLocation)
 {
     Response res;
     res.setStatusCode(301);
-    res.setHeader("Location", newLocation);
+    res.setHeaderValue("Location", newLocation);
 
     std::string body = "<html><body><h1>301 Moved Permanently</h1></body></html>";
     res.setBody(body);
