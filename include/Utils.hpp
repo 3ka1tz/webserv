@@ -3,8 +3,8 @@
 
 # include <string>
 
-std::string getExtension(const std::string& path);
-std::string getFilename(const std::string& path);
 std::string fileToString(const std::string& path);
+std::string getFilename(const std::string& path);
+std::string getExtension(const std::string& path);
 
 #endif
