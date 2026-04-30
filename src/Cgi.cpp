@@ -45,7 +45,6 @@ std::string Cgi::getInterpreter(const std::string& path)
         interpreters[".sh"] = "/bin/bash";
         interpreters[".pl"] = "/usr/bin/perl";
         interpreters[".py"] = "/usr/bin/python3";
-        interpreters[".php"] = "/usr/bin/php-cgi";
     }
 
     std::string ext = getExtension(path);
