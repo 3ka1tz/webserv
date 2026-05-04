@@ -51,8 +51,9 @@ std::string decodeUrl(const std::string& url)
 
     for (size_t i = 0; i < urlSize; ++i)
     {
-        if (url[i] == '%' && (i + 2) < urlSize &&
-            std::isxdigit(url[i + 1]) && std::isxdigit(url[i + 2]))
+        if (url[i] == '%' && (i + 2) < urlSize && 
+            std::isxdigit(static_cast<unsigned char>(url[i + 1])) && 
+            std::isxdigit(static_cast<unsigned char>(url[i + 2])))
         {
             std::string hex = url.substr(i + 1, 2);
             char c = static_cast<char>(std::strtol(hex.c_str(), NULL, 16));
