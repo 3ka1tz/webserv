@@ -42,3 +42,27 @@ std::string getExtension(const std::string& path)
 
     return (ext);
 }
+
+std::string decodeUrl(const std::string& url)
+{
+    size_t urlSize = url.size();
+    std::string result;
+    result.reserve(urlSize);
+
+    for (size_t i = 0; i < urlSize; ++i)
+    {
+        if (url[i] == '%' && (i + 2) < urlSize &&
+            std::isxdigit(url[i + 1]) && std::isxdigit(url[i + 2]))
+        {
+            std::string hex = url.substr(i + 1, 2);
+            char c = static_cast<char>(std::strtol(hex.c_str(), NULL, 16));
+            result += c;
+            i += 2;
+        }
+        else
+        {
+            result += url[i];
+        }
+    }
+    return (result);
+}
